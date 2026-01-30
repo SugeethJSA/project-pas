@@ -234,5 +234,3 @@ These guardrails were explicitly emphasized in discussion.
 ## 17. Closing Note
 
 This project is not just a website—it is a **student‑maintained academic memory** for VIT. With careful execution and community involvement, it can outlive batches and become a trusted resource for years.
-
-?descriptionFromFileType=function+toLocaleUpperCase()+{+[native+code]+}+File&mimeType=application/octet-stream&fileName=Pitch:+VIT+Student+Paper+Archive+Platform.md&fileType=undefined&fileExtension=md
