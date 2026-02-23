@@ -240,3 +240,112 @@ This project is not just a website—it is a **student‑maintained academic mem
 
 
 THIS PROJECT IS NOT OFFICIALLY ASSOCIATED WITH VIT CHENNAI.
+
+## Backend Setup (MVP)
+
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL 14+
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Update `.env` with your database credentials:
+
+```env
+NODE_ENV=development
+PORT=4000
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/project_pas
+```
+
+### 3. Run schema migrations
+
+```bash
+npm run migrate
+```
+
+This applies all SQL files in `db/schema` in filename order.
+
+### 4. Start the backend
+
+```bash
+npm run dev
+```
+
+Server base URL: `http://localhost:4000`
+
+## API Endpoints
+
+### Health
+
+- `GET /health`
+
+### Sources
+
+- `GET /api/sources`
+  - Query filters: `course_code`, `source_type`, `semester`, `academic_year`, `exam_year`, `slot`, `approval_status`, `limit`, `offset`
+  - Default: returns only `APPROVED` sources unless `approval_status` is specified.
+- `GET /api/sources/:sourceId`
+- `POST /api/sources`
+  - Duplicate-protection on metadata: `course_code + source_type + semester + academic_year + exam_year + slot`
+
+Sample payload:
+
+```json
+{
+  "course_code": "CSE2001",
+  "title": "Data Structures CAT-1",
+  "source_type": "CAT",
+  "semester": "Winter",
+  "academic_year": "2025-26",
+  "exam_year": 2025,
+  "slot": "A1",
+  "file_url": "https://example.com/file.pdf"
+}
+```
+
+### Topics
+
+- `GET /api/topics`
+  - Optional query: `course_code`
+- `POST /api/topics`
+
+Sample payload:
+
+```json
+{
+  "topic_name": "Binary Trees",
+  "course_code": "CSE2001"
+}
+```
+
+### Questions
+
+- `GET /api/questions`
+  - Query filters: `source_id`, `limit`, `offset`
+  - Returns each question with attached topics.
+- `POST /api/questions`
+- `POST /api/questions/:questionId/topics`
+
+Sample create payload:
+
+```json
+{
+  "source_id": 1,
+  "question_number": "Q1(a)",
+  "question_type": "MCQ",
+  "difficulty": "MEDIUM",
+  "marks": 2,
+  "topic_ids": [1, 2]
+}
+```
