@@ -349,3 +349,106 @@ Sample create payload:
   "topic_ids": [1, 2]
 }
 ```
+
+---
+
+## Database Schema Overview (MVP)
+
+The database is designed using a three-layer relational model:
+
+```
+sources → questions → topics
+```
+
+This structure enables efficient filtering, duplicate prevention, and future question-bank expansion.
+
+---
+
+### 1. Sources
+
+Represents a paper, assignment, quiz, or memory-based submission.
+
+Each row corresponds to one uploaded academic source.
+
+**Key fields:**
+
+- `source_id` – Primary key  
+- `course_code` – Subject identifier (e.g., BACSE103)  
+- `title` – Human-readable course title  
+- `source_type` – CAT1 / CAT2 / FAT / PAT / ASSIGNMENT / MEMORY  
+- `semester` – Fall / Winter / etc.  
+- `academic_year` – Example: 2025-26  
+- `exam_year` – Calendar year the exam occurred  
+- `slot` – Slot of the subject  
+- `file_url` – Location of stored file  
+- `approval_status` – PENDING / APPROVED  
+- `created_at` – Timestamp of entry  
+
+**Duplicate protection is enforced on:**
+
+```
+course_code + source_type + semester + academic_year + exam_year + slot
+```
+
+This prevents repeated uploads of the same paper.
+
+---
+
+### 2. Questions
+
+Represents individual questions extracted from a source.
+
+Each question belongs to exactly one source.
+
+**Key fields:**
+
+- `question_id` – Primary key  
+- `source_id` – Foreign key referencing `sources`  
+- `question_number` – Label from original paper (e.g., Q1(a))  
+- `question_type` – MCQ / NUMERICAL / DESCRIPTIVE  
+- `difficulty` – EASY / MEDIUM / HARD  
+- `marks` – Marks allocated  
+- `created_at` – Timestamp  
+
+This table enables the future transition from a PDF archive to a searchable question bank.
+
+---
+
+### 3. Topics
+
+Represents conceptual tags used for filtering and organization.
+
+**Key fields:**
+
+- `topic_id` – Primary key  
+- `topic_name` – Topic label (e.g., Binary Trees)  
+- `course_code` – Associated course  
+
+A many-to-many relationship exists between questions and topics:
+
+```
+questions ↔ question_topics ↔ topics
+```
+
+This allows a single question to belong to multiple topics and enables topic-wise filtering across years and exams.
+
+---
+
+### Migration System
+
+All schema files are located in:
+
+```bash
+db/schema/
+```
+
+They are executed in filename order (e.g., `001_`, `002_`, `003_`).
+
+**Important Rule:**
+
+- Existing migration files should not be modified after being committed.
+- New schema changes must be introduced as new migration files.
+
+This ensures database consistency across all contributors and environments.
+
+---
