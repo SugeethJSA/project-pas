@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VITArchive — Student Paper Repository</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #6C63FF;
+    --primary-dark: #5A52E0;
+    --primary-light: #8B85FF;
+    --secondary: #49fcc4;
+    --accent: #43E97B;
+    --accent2: #F9C846;
+    --bg: #F8F7FF;
+    --bg2: #EEEEFF;
+    --surface: #FFFFFF;
+    --surface2: #F3F4FF;
+    --border: #E0DEFF;
+    --text: #1A1A2E;
+    --text2: #4A4A6A;
+    --text3: #8888AA;
+    --shadow: 0 4px 24px rgba(108,99,255,0.10);
+    --shadow-lg: 0 8px 40px rgba(108,99,255,0.18);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --nav-height: 68px;
+  }
+  [data-theme="dark"] {
+    --primary: #8B85FF;
+    --primary-dark: #6C63FF;
+    --primary-light: #A8A3FF;
+    --bg: #0E0E1A;
+    --bg2: #141428;
+    --surface: #1A1A2E;
+    --surface2: #222240;
+    --border: #2D2D50;
+    --text: #F0EEFF;
+    --text2: #B0AECE;
+    --text3: #6666AA;
+    --shadow: 0 4px 24px rgba(0,0,0,0.35);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+    overflow-x: hidden;
+  }
+
+  /* ===== NAVBAR ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    height: var(--nav-height);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    display: flex; align-items: center;
+    padding: 0 2rem;
+    gap: 1rem;
+    box-shadow: var(--shadow);
+    transition: all 0.3s;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 1.3rem;
+    color: var(--primary); text-decoration: none;
+    flex-shrink: 0;
+  }
+  .nav-logo .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1rem;
+  }
+  .nav-links {
+    display: flex; align-items: center; gap: 0.2rem;
+    flex: 1; overflow-x: auto; scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-link {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.82rem; font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none; background: none;
+  }
+  .nav-link:hover, .nav-link.active {
+    background: var(--bg2);
+    color: var(--primary);
+  }
+  .nav-link i { font-size: 0.8rem; }
+  .nav-actions { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+  .btn-upload-nav {
+    padding: 0.45rem 1rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; border: none; border-radius: 8px;
+    font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 0.4rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-upload-nav:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(108,99,255,0.4); }
+  .theme-toggle {
+    width: 36px; height: 36px;
+    border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--text2);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; transition: all 0.2s;
+  }
+  .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* ===== MAIN CONTENT ===== */
+  main { padding-top: var(--nav-height); }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: calc(100vh - var(--nav-height));
+    background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 50%, var(--bg) 100%);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 4rem 2rem 2rem;
+    text-align: center;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .hero-blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(80px); opacity: 0.18;
+    animation: blobFloat 8s ease-in-out infinite;
+  }
+  .hero-blob:nth-child(1) { width: 500px; height: 500px; background: var(--primary); top: -100px; left: -100px; animation-delay: 0s; }
+  .hero-blob:nth-child(2) { width: 400px; height: 400px; background: var(--secondary); top: 20%; right: -80px; animation-delay: 2s; }
+  .hero-blob:nth-child(3) { width: 350px; height: 350px; background: var(--accent); bottom: -50px; left: 30%; animation-delay: 4s; }
+  @keyframes blobFloat {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(20px,-20px) scale(1.05); }
+    66% { transform: translate(-10px,15px) scale(0.97); }
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 1rem; border-radius: 100px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--primary); font-size: 0.82rem; font-weight: 600;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease both;
+    box-shadow: var(--shadow);
+  }
+  .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800; line-height: 1.1;
+    margin-bottom: 1.2rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 span { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text2); max-width: 560px;
+    line-height: 1.6; margin-bottom: 2rem;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-search {
+    width: 100%; max-width: 600px;
+    display: flex; gap: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px; padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .hero-search input {
+    flex: 1; border: none; background: none; outline: none;
+    font-size: 1rem; color: var(--text); font-family: 'Inter', sans-serif;
+  }
+  .hero-search input::placeholder { color: var(--text3); }
+  .hero-search button {
+    padding: 0.7rem 1.5rem; border-radius: 100px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; border: none; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .hero-search button:hover { transform: scale(1.03); }
+  .hero-tags {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+    margin-bottom: 3rem;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .hero-tag {
+    padding: 0.35rem 0.85rem; border-radius: 100px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text2); font-size: 0.8rem; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .hero-tag:hover { border-color: var(--primary); color: var(--primary); background: var(--bg2); }
+  .hero-stats {
+    display: flex; gap: 3rem; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.2rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-stat .label { font-size: 0.82rem; color: var(--text3); margin-top: 0.2rem; }
+
+  /* ===== QUICK ACCESS CARDS ===== */
+  .quick-access {
+    padding: 4rem 2rem;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem;
+  }
+  .section-sub { color: var(--text2); margin-bottom: 2rem; }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .qcard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    display: flex; flex-direction: column; gap: 0.8rem;
+    position: relative; overflow: hidden;
+  }
+  .qcard::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .qcard:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+  .qcard:hover::before { opacity: 0.04; }
+  .qcard-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; color: white;
+  }
+  .qcard-title { font-weight: 700; font-size: 1rem; }
+  .qcard-desc { font-size: 0.82rem; color: var(--text2); line-height: 1.5; }
+  .qcard-arrow { margin-top: auto; color: var(--primary); font-size: 0.85rem; font-weight: 600; }
+
+  /* ===== RECENT PAPERS ===== */
+  .recent-section {
+    padding: 2rem 2rem 4rem;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .recent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+  .papers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  .paper-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; flex-direction: column; gap: 0.8rem;
+  }
+  .paper-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--primary); }
+  .paper-header { display: flex; justify-content: space-between; align-items: flex-start; }
+  .paper-type {
+    padding: 0.25rem 0.65rem; border-radius: 100px;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .type-cat { background: #EEF; color: var(--primary); }
+  .type-fat { background: #FEE; color: #E05; }
+  .type-pat { background: #EFE; color: #0A7; }
+  .paper-year { font-size: 0.78rem; color: var(--text3); }
+  .paper-title { font-weight: 700; font-size: 0.95rem; }
+  .paper-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .paper-tag {
+    padding: 0.2rem 0.6rem; border-radius: 6px;
+    background: var(--surface2); color: var(--text2);
+    font-size: 0.75rem;
+  }
+  .paper-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+  .paper-uploader { display: flex; align-items: center; gap: 0.5rem; color: var(--text3); font-size: 0.78rem; }
+  .avatar-sm {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.65rem; font-weight: 700;
+  }
+  .btn-download {
+    padding: 0.35rem 0.8rem; border-radius: 8px;
+    background: var(--bg2); color: var(--primary);
+    border: 1px solid var(--border); font-size: 0.78rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-download:hover { background: var(--primary); color: white; }
+
+  /* ===== BROWSE PAGE ===== */
+  .page-header {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--bg2) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem 2rem;
+  }
+  .page-header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem; font-weight: 800; margin-bottom: 0.3rem;
+  }
+  .page-header p { color: var(--text2); }
+  .browse-layout {
+    max-width: 1200px; margin: 0 auto;
+    padding: 2rem;
+    display: grid; grid-template-columns: 260px 1fr; gap: 2rem;
+  }
+  .sidebar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    height: fit-content;
+    position: sticky; top: calc(var(--nav-height) + 1rem);
+  }
+  .filter-group { margin-bottom: 1.5rem; }
+  .filter-group:last-child { margin-bottom: 0; }
+  .filter-label { font-size: 0.75rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 0.6rem; }
+  .filter-options { display: flex; flex-direction: column; gap: 0.3rem; }
+  .filter-option {
+    padding: 0.5rem 0.75rem; border-radius: 8px;
+    cursor: pointer; font-size: 0.85rem; color: var(--text2);
+    display: flex; align-items: center; justify-content: space-between;
+    transition: all 0.15s;
+  }
+  .filter-option:hover { background: var(--bg2); color: var(--primary); }
+  .filter-option.selected { background: var(--bg2); color: var(--primary); font-weight: 600; }
+  .filter-count { font-size: 0.72rem; background: var(--bg); padding: 0.1rem 0.4rem; border-radius: 4px; }
+  .browse-main {}
+  .browse-toolbar {
+    display: flex; gap: 0.8rem; align-items: center;
+    margin-bottom: 1.2rem; flex-wrap: wrap;
+  }
+  .search-bar {
+    flex: 1; min-width: 200px;
+    display: flex; align-items: center; gap: 0.6rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.6rem 1rem;
+  }
+  .search-bar input {
+    flex: 1; border: none; background: none; outline: none;
+    color: var(--text); font-size: 0.9rem; font-family: 'Inter', sans-serif;
+  }
+  .search-bar i { color: var(--text3); }
+  .sort-btn {
+    padding: 0.6rem 1rem; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text2); font-size: 0.85rem; cursor: pointer;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .results-info { font-size: 0.82rem; color: var(--text3); margin-bottom: 0.8rem; }
+
+  /* ===== UPLOAD PAGE ===== */
+  .upload-container {
+    max-width: 760px; margin: 0 auto; padding: 2rem;
+  }
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 3rem 2rem;
+    text-align: center; cursor: pointer;
+    background: var(--surface);
+    transition: all 0.25s;
+    margin-bottom: 2rem;
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--primary); background: var(--bg2);
+  }
+  .upload-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+  .upload-zone h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .upload-zone p { color: var(--text2); font-size: 0.88rem; }
+  .upload-zone .or { margin: 1rem 0; color: var(--text3); font-size: 0.82rem; }
+  .btn-primary {
+    padding: 0.7rem 1.5rem; border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; border: none; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(108,99,255,0.4); }
+  .form-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .form-card h3 { font-weight: 700; margin-bottom: 1.5rem; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text2); margin-bottom: 0.4rem; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 0.7rem 1rem; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--bg);
+    color: var(--text); font-size: 0.9rem; font-family: 'Inter', sans-serif;
+    outline: none; transition: border 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--primary);
+  }
+  .step-indicator {
+    display: flex; align-items: center; gap: 0; margin-bottom: 2rem;
+  }
+  .step {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.82rem; font-weight: 600; color: var(--text3);
+  }
+  .step.active { color: var(--primary); }
+  .step.done { color: var(--accent); }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--bg2); color: var(--text3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 700;
+  }
+  .step.active .step-num { background: var(--primary); color: white; }
+  .step.done .step-num { background: var(--accent); color: white; }
+  .step-line { flex: 1; height: 2px; background: var(--border); margin: 0 0.5rem; }
+
+  /* ===== LEADERBOARD ===== */
+  .leaderboard-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .top3 {
+    display: flex; gap: 1rem; align-items: flex-end; justify-content: center;
+    margin-bottom: 2rem;
+  }
+  .top-card {
+    flex: 1; max-width: 220px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem 1rem;
+    text-align: center; position: relative; overflow: hidden;
+    transition: all 0.2s;
+  }
+  .top-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .top-card.gold { border-color: #F9C846; background: linear-gradient(135deg, var(--surface), #FFFDE8); }
+  .top-card.silver { border-color: #C0C0C0; }
+  .top-card.bronze { border-color: #CD7F32; }
+  .rank-badge {
+    position: absolute; top: 1rem; right: 1rem;
+    font-size: 1.5rem;
+  }
+  .top-avatar {
+    width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 0.8rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 800; color: white;
+  }
+  .top-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .top-school { font-size: 0.78rem; color: var(--text3); margin-bottom: 0.6rem; }
+  .top-points {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.4rem; font-weight: 800; color: var(--primary);
+  }
+  .top-points span { font-size: 0.72rem; color: var(--text3); font-weight: 400; font-family: 'Inter', sans-serif; }
+  .lb-table {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .lb-row {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s; cursor: pointer;
+  }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row:hover { background: var(--bg2); }
+  .lb-rank { font-weight: 700; color: var(--text3); width: 24px; text-align: center; font-size: 0.88rem; }
+  .lb-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 0.82rem; flex-shrink: 0;
+  }
+  .lb-info { flex: 1; }
+  .lb-name { font-weight: 600; font-size: 0.9rem; }
+  .lb-meta { font-size: 0.75rem; color: var(--text3); }
+  .lb-badges { display: flex; gap: 0.3rem; }
+  .lb-badge { font-size: 1rem; }
+  .lb-pts {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; color: var(--primary); font-size: 0.95rem;
+  }
+
+  /* ===== QUESTION BANK ===== */
+  .qbank-container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  .qbank-filters {
+    display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 2rem;
+  }
+  .filter-pill {
+    padding: 0.5rem 1.1rem; border-radius: 100px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text2); font-size: 0.82rem; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-pill:hover, .filter-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .question-list { display: flex; flex-direction: column; gap: 0.8rem; }
+  .question-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 1.2rem 1.5rem;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; gap: 1rem; align-items: flex-start;
+  }
+  .question-card:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+  .q-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem; font-weight: 800; color: var(--primary);
+    min-width: 32px;
+  }
+  .q-body { flex: 1; }
+  .q-text { font-size: 0.92rem; line-height: 1.6; margin-bottom: 0.6rem; }
+  .q-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .q-tag { padding: 0.2rem 0.6rem; border-radius: 6px; background: var(--bg2); color: var(--text2); font-size: 0.72rem; }
+  .q-meta { display: flex; gap: 0.6rem; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text3); align-items: center; }
+  .q-freq { display: flex; align-items: center; gap: 0.3rem; color: var(--secondary); font-weight: 600; }
+
+  /* ===== STATS PAGE ===== */
+  .stats-container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem; margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+    text-align: center;
+  }
+  .stat-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+  .stat-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .stat-label { font-size: 0.82rem; color: var(--text2); margin-top: 0.3rem; }
+  .chart-container {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem;
+  }
+  .chart-title { font-weight: 700; margin-bottom: 1.2rem; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 1rem; height: 160px; }
+  .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+  .bar {
+    width: 100%; border-radius: 6px 6px 0 0;
+    background: linear-gradient(to top, var(--primary), var(--primary-light));
+    transition: height 0.8s ease;
+    min-height: 4px;
+  }
+  .bar-label { font-size: 0.72rem; color: var(--text3); }
+  .donut-container { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+  .donut {
+    width: 140px; height: 140px; border-radius: 50%;
+    background: conic-gradient(
+      var(--primary) 0deg 144deg,
+      var(--secondary) 144deg 252deg,
+      var(--accent) 252deg 324deg,
+      var(--accent2) 324deg 360deg
+    );
+    position: relative; flex-shrink: 0;
+  }
+  .donut::after {
+    content: ''; position: absolute;
+    inset: 28px; border-radius: 50%;
+    background: var(--surface);
+  }
+  .legend { display: flex; flex-direction: column; gap: 0.6rem; }
+  .legend-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ===== ROADMAP ===== */
+  .roadmap-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .timeline-item { position: relative; margin-bottom: 2rem; }
+  .timeline-dot {
+    position: absolute; left: -2rem; top: 0.3rem;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--primary); border: 3px solid var(--surface);
+    box-shadow: 0 0 0 2px var(--primary);
+  }
+  .timeline-dot.done { background: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .timeline-dot.current { background: var(--accent2); box-shadow: 0 0 0 2px var(--accent2); animation: pulse 2s infinite; }
+  .timeline-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 1.2rem;
+  }
+  .timeline-phase { font-size: 0.72rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 0.3rem; }
+  .timeline-title { font-weight: 700; margin-bottom: 0.5rem; }
+  .timeline-items { display: flex; flex-direction: column; gap: 0.3rem; }
+  .timeline-item-row {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.85rem; color: var(--text2);
+  }
+  .timeline-item-row i { font-size: 0.75rem; }
+  .done-icon { color: var(--accent); }
+  .progress-icon { color: var(--accent2); }
+  .todo-icon { color: var(--text3); }
+
+  /* ===== ABOUT ===== */
+  .about-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .team-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem; text-align: center;
+    transition: all 0.2s;
+  }
+  .team-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .team-avatar {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 0.8rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 800; color: white;
+  }
+  .team-name { font-weight: 700; font-size: 0.9rem; }
+  .team-role { font-size: 0.78rem; color: var(--text3); margin-top: 0.2rem; }
+  .value-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+  .value-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 1.2rem;
+    display: flex; gap: 0.8rem;
+  }
+  .value-icon { font-size: 1.5rem; }
+  .value-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .value-desc { font-size: 0.82rem; color: var(--text2); line-height: 1.5; }
+
+  /* ===== FAQ ===== */
+  .faq-container { max-width: 760px; margin: 0 auto; padding: 2rem; }
+  .faq-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); margin-bottom: 0.8rem;
+    overflow: hidden;
+  }
+  .faq-q {
+    padding: 1.1rem 1.3rem;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; font-weight: 600; font-size: 0.92rem;
+    transition: background 0.15s;
+  }
+  .faq-q:hover { background: var(--bg2); }
+  .faq-q i { transition: transform 0.3s; color: var(--text3); }
+  .faq-item.open .faq-q i { transform: rotate(180deg); }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .faq-a-inner { padding: 0 1.3rem 1.1rem; color: var(--text2); font-size: 0.88rem; line-height: 1.7; }
+  .faq-item.open .faq-a { max-height: 300px; }
+
+  /* ===== FEEDBACK ===== */
+  .feedback-container { max-width: 700px; margin: 0 auto; padding: 2rem; }
+  .feedback-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
+  .feedback-type {
+    border: 2px solid var(--border); border-radius: var(--radius-sm);
+    padding: 1.2rem; text-align: center; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .feedback-type:hover, .feedback-type.selected { border-color: var(--primary); background: var(--bg2); }
+  .feedback-type-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  .feedback-type-label { font-size: 0.85rem; font-weight: 600; }
+  .stars { display: flex; gap: 0.4rem; margin-bottom: 1rem; }
+  .star { font-size: 1.8rem; cursor: pointer; color: var(--border); transition: color 0.15s; }
+  .star.lit, .star:hover, .stars:hover .star { color: var(--accent2); }
+  .stars .star:hover ~ .star { color: var(--border); }
+
+  /* ===== CONTRIBUTORS ===== */
+  .contributors-container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  .contrib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+  .contrib-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.3rem;
+    display: flex; gap: 1rem; align-items: flex-start;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .contrib-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--primary); }
+  .contrib-avatar {
+    width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 800; color: white;
+  }
+  .contrib-info { flex: 1; }
+  .contrib-name { font-weight: 700; font-size: 0.92rem; margin-bottom: 0.2rem; }
+  .contrib-school { font-size: 0.78rem; color: var(--text3); margin-bottom: 0.5rem; }
+  .contrib-stats { display: flex; gap: 0.8rem; }
+  .contrib-stat { font-size: 0.75rem; color: var(--text2); display: flex; align-items: center; gap: 0.3rem; }
+  .contrib-badges-row { display: flex; gap: 0.3rem; margin-top: 0.5rem; }
+
+  /* ===== REQUEST PAGE ===== */
+  .request-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .request-list { display: flex; flex-direction: column; gap: 0.8rem; }
+  .request-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 1.1rem 1.3rem;
+    display: flex; gap: 1rem; align-items: center;
+  }
+  .request-votes {
+    text-align: center; min-width: 50px;
+  }
+  .vote-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+    color: var(--text3); font-size: 0.75rem; font-weight: 600; cursor: pointer;
+    transition: color 0.2s;
+  }
+  .vote-btn:hover, .vote-btn.voted { color: var(--primary); }
+  .vote-btn i { font-size: 1rem; }
+  .vote-count { font-weight: 700; font-size: 1rem; color: var(--text2); }
+  .request-info { flex: 1; }
+  .request-title { font-weight: 600; font-size: 0.92rem; margin-bottom: 0.3rem; }
+  .request-meta { font-size: 0.78rem; color: var(--text3); }
+  .request-status {
+    padding: 0.25rem 0.7rem; border-radius: 100px;
+    font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  }
+  .status-open { background: #EFE; color: #0A7; }
+  .status-inprogress { background: #EEF; color: var(--primary); }
+  .status-fulfilled { background: #F5F5F5; color: var(--text3); }
+
+  /* ===== MEMORY QUESTIONS ===== */
+  .memory-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .memory-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+  .memory-tab {
+    padding: 0.6rem 1.3rem; border-radius: 8px;
+    font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; color: var(--text2);
+    border: 1px solid var(--border); background: var(--surface);
+    transition: all 0.2s;
+  }
+  .memory-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+  /* ===== COURSE PAGES ===== */
+  .courses-container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+  .course-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+    cursor: pointer; transition: all 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .course-card::after {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px; background: var(--primary);
+    transition: width 0.2s;
+  }
+  .course-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .course-card:hover::after { width: 6px; }
+  .course-code { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 1rem; color: var(--primary); margin-bottom: 0.3rem; }
+  .course-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.8rem; }
+  .course-stats { display: flex; gap: 1rem; }
+  .course-stat { font-size: 0.78rem; color: var(--text3); display: flex; align-items: center; gap: 0.3rem; }
+
+  /* ===== SEARCH PAGE ===== */
+  .search-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .search-hero {
+    background: linear-gradient(135deg, var(--bg2), var(--surface));
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 2.5rem; text-align: center; margin-bottom: 2rem;
+  }
+  .search-hero h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-bottom: 1rem; }
+  .search-big {
+    display: flex; gap: 0.5rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 100px; padding: 0.6rem 0.6rem 0.6rem 1.5rem;
+    box-shadow: var(--shadow); max-width: 600px; margin: 0 auto;
+  }
+  .search-big input {
+    flex: 1; border: none; background: none; outline: none;
+    font-size: 1rem; color: var(--text); font-family: 'Inter', sans-serif;
+  }
+  .search-big button {
+    padding: 0.7rem 1.5rem; border-radius: 100px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  }
+  .search-suggestions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1rem; }
+  .suggestion-chip {
+    padding: 0.35rem 0.85rem; border-radius: 100px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text2); font-size: 0.8rem; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .suggestion-chip:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* ===== GUIDELINES ===== */
+  .guidelines-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+  .guideline-section {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.2rem;
+  }
+  .guideline-section h3 { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; font-size: 1rem; }
+  .guideline-items { display: flex; flex-direction: column; gap: 0.5rem; }
+  .guideline-item {
+    display: flex; align-items: flex-start; gap: 0.8rem;
+    padding: 0.6rem; border-radius: 8px; font-size: 0.88rem;
+    line-height: 1.5; color: var(--text2);
+  }
+  .guideline-item i { margin-top: 0.1rem; flex-shrink: 0; }
+  .do-icon { color: var(--accent); }
+  .dont-icon { color: var(--secondary); }
+
+  /* ===== TOAST ===== */
+  .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; }
+  .toast {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 0.9rem 1.2rem;
+    display: flex; align-items: center; gap: 0.7rem;
+    box-shadow: var(--shadow-lg); min-width: 280px;
+    animation: slideIn 0.3s ease; font-size: 0.88rem;
+    border-left: 4px solid var(--accent);
+  }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--surface); border-top: 1px solid var(--border);
+    padding: 3rem 2rem 2rem; margin-top: 4rem;
+  }
+  .footer-content { max-width: 1200px; margin: 0 auto; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+  .footer-brand p { color: var(--text2); font-size: 0.85rem; line-height: 1.7; margin-top: 0.8rem; max-width: 280px; }
+  .footer-links-title { font-weight: 700; font-size: 0.85rem; margin-bottom: 0.8rem; }
+  .footer-link {
+    display: block; color: var(--text2); font-size: 0.83rem;
+    text-decoration: none; padding: 0.2rem 0;
+    cursor: pointer; transition: color 0.15s;
+  }
+  .footer-link:hover { color: var(--primary); }
+  .footer-bottom {
+    border-top: 1px solid var(--border); padding-top: 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+    font-size: 0.8rem; color: var(--text3);
+  }
+  .footer-social { display: flex; gap: 0.6rem; }
+  .social-btn {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--bg2); color: var(--text2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s; font-size: 0.85rem;
+    border: 1px solid var(--border);
+  }
+  .social-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .browse-layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .top3 { flex-direction: column; align-items: center; }
+    .top-card { max-width: 100%; }
+    .value-grid { grid-template-columns: 1fr; }
+    .feedback-types { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ===== MISC UTILS ===== */
+  .btn-outline {
+    padding: 0.6rem 1.2rem; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text2); font-size: 0.85rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif;
+  }
+  .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+  .text-link { color: var(--primary); cursor: pointer; text-decoration: underline; }
+  .mb1 { margin-bottom: 0.5rem; }
+  .mb2 { margin-bottom: 1rem; }
+  .mb3 { margin-bottom: 1.5rem; }
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .gap1 { gap: 0.5rem; }
+  .gap2 { gap: 1rem; }
+  .fw700 { font-weight: 700; }
+  .text-sm { font-size: 0.82rem; }
+  .text-muted { color: var(--text3); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .announcement-bar {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: white; text-align: center;
+    padding: 0.5rem; font-size: 0.82rem; font-weight: 500;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
+  }
+  .with-announcement { top: calc(var(--nav-height) + 32px); }
+  .with-announcement main { padding-top: calc(var(--nav-height) + 32px); }
+  nav.with-announcement-top { top: 32px; }
+</style>
+</head>
+<body>
+
+<!-- Announcement Bar -->
+<div class="announcement-bar">
+  VITArchive is in <strong>Beta</strong> — Help us grow by uploading your papers! 
+  <span class="text-link" style="color:rgba(255,255,255,0.8); cursor:pointer; text-decoration: underline;">Learn more →</span>
+</div>
+
+<!-- NAV -->
+<nav style="top: 32px;" id="mainNav">
+  <a class="nav-logo" onclick="showPage('home')">
+    <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+    VITArchive
+  </a>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('home')"><i class="fas fa-home"></i> Home</button>
+    <button class="nav-link" onclick="showPage('browse')"><i class="fas fa-folder-open"></i> Browse</button>
+    <button class="nav-link" onclick="showPage('search')"><i class="fas fa-search"></i> Search</button>
+    <button class="nav-link" onclick="showPage('courses')"><i class="fas fa-graduation-cap"></i> Courses</button>
+    <button class="nav-link" onclick="showPage('qbank')"><i class="fas fa-lightbulb"></i> Question Bank</button>
+    <button class="nav-link" onclick="showPage('memory')"><i class="fas fa-brain"></i> Memory Q's</button>
+    <button class="nav-link" onclick="showPage('leaderboard')"><i class="fas fa-trophy"></i> Leaderboard</button>
+    <button class="nav-link" onclick="showPage('request')"><i class="fas fa-hand-paper"></i> Requests</button>
+    <button class="nav-link" onclick="showPage('stats')"><i class="fas fa-chart-bar"></i> Stats</button>
+    <button class="nav-link" onclick="showPage('contributors')"><i class="fas fa-users"></i> Contributors</button>
+    <button class="nav-link" onclick="showPage('guidelines')"><i class="fas fa-book"></i> Guidelines</button>
+    <button class="nav-link" onclick="showPage('faq')"><i class="fas fa-question-circle"></i> FAQ</button>
+    <button class="nav-link" onclick="showPage('roadmap')"><i class="fas fa-map"></i> Roadmap</button>
+    <button class="nav-link" onclick="showPage('about')"><i class="fas fa-info-circle"></i> About</button>
+    <button class="nav-link" onclick="showPage('feedback')"><i class="fas fa-comment"></i> Feedback</button>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-upload-nav" onclick="showPage('upload')"><i class="fas fa-upload"></i> Upload Paper</button>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
+  </div>
+</nav>
+
+<main style="padding-top: calc(68px + 32px)">
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-blob"></div>
+      <div class="hero-blob"></div>
+      <div class="hero-blob"></div>
+    </div>
+    <div class="hero-badge"><div class="dot"></div> Student-Built. Community-Driven. Always Free.</div>
+    <h1>VIT's <span>Academic Memory</span><br>Lives Here</h1>
+    <p>The central archive for CAT, FAT, PAT papers, question banks, and memory-based questions — organized, searchable, and preserved for every batch.</p>
+    <div class="hero-search">
+      <i class="fas fa-search" style="color:var(--text3)"></i>
+      <input type="text" placeholder="Search by course code, name, or topic... (e.g. MAT1001, OOP, CAT1)">
+      <button onclick="showPage('search')">Search</button>
+    </div>
+    <div class="hero-tags">
+      <span class="hero-tag" onclick="showPage('browse')">CAT Papers</span>
+      <span class="hero-tag" onclick="showPage('browse')">FAT Papers</span>
+      <span class="hero-tag" onclick="showPage('browse')">PAT Papers</span>
+      <span class="hero-tag" onclick="showPage('qbank')">Question Bank</span>
+      <span class="hero-tag" onclick="showPage('courses')">All Courses</span>
+      <span class="hero-tag" onclick="showPage('memory')">Memory Questions</span>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">2,847</div><div class="label">Papers Archived</div></div>
+      <div class="hero-stat"><div class="num">12,400+</div><div class="label">Questions Indexed</div></div>
+      <div class="hero-stat"><div class="num">480</div><div class="label">Courses Covered</div></div>
+      <div class="hero-stat"><div class="num">1,200+</div><div class="label">Contributors</div></div>
+    </div>
+  </section>
+
+  <!-- Quick Access -->
+  <section class="quick-access">
+    <div class="section-title">What do you need today?</div>
+    <div class="section-sub">Jump straight to what you're looking for.</div>
+    <div class="cards-grid">
+      <div class="qcard" onclick="showPage('browse')">
+        <div class="qcard-icon" style="background:linear-gradient(135deg,#6C63FF,#A8A3FF)"><i class="fas fa-file-pdf"></i></div>
+        <div class="qcard-title">Browse Papers</div>
+        <div class="qcard-desc">Filter by course, exam type, year, slot, and school.</div>
+        <div class="qcard-arrow"><i class="fas fa-arrow-right"></i> Explore Archive</div>
+      </div>
+      <div class="qcard" onclick="showPage('qbank')">
+        <div class="qcard-icon" style="background:linear-gradient(135deg,#43E97B,#38F9D7)"><i class="fas fa-lightbulb"></i></div>
+        <div class="qcard-title">Question Bank</div>
+        <div class="qcard-desc">Search past questions by topic, subject, or exam type.</div>
+        <div class="qcard-arrow"><i class="fas fa-arrow-right"></i> Explore Q's</div>
+      </div>
+      <div class="qcard" onclick="showPage('upload')">
+        <div class="qcard-icon" style="background:linear-gradient(135deg,#FF6584,#FF8E53)"><i class="fas fa-upload"></i></div>
+        <div class="qcard-title">Upload Paper</div>
+        <div class="qcard-desc">Share your papers and contribute to the community archive.</div>
+        <div class="qcard-arrow"><i class="fas fa-arrow-right"></i> Upload Now</div>
+      </div>
+      <div class="qcard" onclick="showPage('memory')">
+        <div class="qcard-icon" style="background:linear-gradient(135deg,#F9C846,#FF6584)"><i class="fas fa-brain"></i></div>
+        <div class="qcard-title">Memory Questions</div>
+        <div class="qcard-desc">Submit or browse recall-based questions from recent exams.</div>
+        <div class="qcard-arrow"><i class="fas fa-arrow-right"></i> View Memory Q's</div>
+      </div>
+      <div class="qcard" onclick="showPage('courses')">
+        <div class="qcard-icon" style="background:linear-gradient(135deg,#4776E6,#8E54E9)"><i class="fas fa-graduation-cap"></i></div>
+        <div class="qcard-title">Course Pages</div>
+        <div class="qcard-desc">All papers, questions, and resources for a specific course.</div>
+        <div class="qcard-arrow"><i class="fas fa-arrow-right"></i> Find Course</div>
+      </div>
+      <div class="qcard" onclick="showPage('request')">
+        <div class="qcard-icon" style="background:linear-gradient(135deg,#11998E,#38EF7D)"><i class="fas fa-hand-paper"></i></div>
+        <div class="qcard-title">Request Papers</div>
+        <div class="qcard-desc">Can't find what you need? Submit a request for the community.</div>
+        <div class="qcard-arrow"><i class="fas fa-arrow-right"></i> Submit Request</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Papers -->
+  <section class="recent-section">
+    <div class="recent-header">
+      <div>
+        <div class="section-title">Recently Added</div>
+        <div class="section-sub" style="margin:0">Freshly uploaded by the community</div>
+      </div>
+      <button class="btn-outline" onclick="showPage('browse')">View All <i class="fas fa-arrow-right"></i></button>
+    </div>
+    <div class="papers-grid">
+      <div class="paper-card">
+        <div class="paper-header"><span class="paper-type type-cat">CAT 1</span><span class="paper-year">2024</span></div>
+        <div class="paper-title">Data Structures and Algorithms</div>
+        <div class="paper-meta">
+          <span class="paper-tag">CSE1006</span>
+          <span class="paper-tag">SCOPE</span>
+          <span class="paper-tag">Slot A1</span>
+        </div>
+        <div class="paper-footer">
+          <div class="paper-uploader"><div class="avatar-sm">R</div> Rahul K.</div>
+          <button class="btn-download"><i class="fas fa-download"></i> PDF</button>
+        </div>
+      </div>
+      <div class="paper-card">
+        <div class="paper-header"><span class="paper-type type-fat">FAT</span><span class="paper-year">2024</span></div>
+        <div class="paper-title">Engineering Mathematics IV</div>
+        <div class="paper-meta">
+          <span class="paper-tag">MAT2004</span>
+          <span class="paper-tag">SMEC</span>
+          <span class="paper-tag">Slot B1+TB1</span>
+        </div>
+        <div class="paper-footer">
+          <div class="paper-uploader"><div class="avatar-sm">A</div> Ananya S.</div>
+          <button class="btn-download"><i class="fas fa-download"></i> PDF</button>
+        </div>
+      </div>
+      <div class="paper-card">
+        <div class="paper-header"><span class="paper-type type-cat">CAT 2</span><span class="paper-year">2024</span></div>
+        <div class="paper-title">Object Oriented Programming</div>
+        <div class="paper-meta">
+          <span class="paper-tag">CSE1007</span>
+          <span class="paper-tag">SCOPE</span>
+          <span class="paper-tag">Slot C1</span>
+        </div>
+        <div class="paper-footer">
+          <div class="paper-uploader"><div class="avatar-sm">P</div> Priya M.</div>
+          <button class="btn-download"><i class="fas fa-download"></i> PDF</button>
+        </div>
+      </div>
+      <div class="paper-card">
+        <div class="paper-header"><span class="paper-type type-pat">PAT</span><span class="paper-year">2024</span></div>
+        <div class="paper-title">Computer Networks</div>
+        <div class="paper-meta">
+          <span class="paper-tag">CSE3501</span>
+          <span class="paper-tag">SCOPE</span>
+          <span class="paper-tag">Memory-based</span>
+        </div>
+        <div class="paper-footer">
+          <div class="paper-uploader"><div class="avatar-sm">S</div> Suresh P.</div>
+          <button class="btn-download"><i class="fas fa-image"></i> Image</button>
+        </div>
+      </div>
+      <div class="paper-card">
+        <div class="paper-header"><span class="paper-type type-fat">FAT</span><span class="paper-year">2023</span></div>
+        <div class="paper-title">Digital Signal Processing</div>
+        <div class="paper-meta">
+          <span class="paper-tag">ECE3003</span>
+          <span class="paper-tag">SELECT</span>
+          <span class="paper-tag">Slot D1</span>
+        </div>
+        <div class="paper-footer">
+          <div class="paper-uploader"><div class="avatar-sm">V</div> Vishnu T.</div>
+          <button class="btn-download"><i class="fas fa-download"></i> PDF</button>
+        </div>
+      </div>
+      <div class="paper-card">
+        <div class="paper-header"><span class="paper-type type-cat">CAT 1</span><span class="paper-year">2024</span></div>
+        <div class="paper-title">Theory of Computation</div>
+        <div class="paper-meta">
+          <span class="paper-tag">CSE3002</span>
+          <span class="paper-tag">SCOPE</span>
+          <span class="paper-tag">Slot E1</span>
+        </div>
+        <div class="paper-footer">
+          <div class="paper-uploader"><div class="avatar-sm">N</div> Nidhi R.</div>
+          <button class="btn-download"><i class="fas fa-download"></i> PDF</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Strip -->
+  <div style="background:linear-gradient(135deg,var(--primary),var(--secondary));padding:3rem 2rem;text-align:center;color:white;margin-top:1rem;">
+    <div style="max-width:800px;margin:0 auto;">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:0.5rem;">Built for students. Maintained by students.</div>
+      <div style="opacity:0.85;margin-bottom:1.5rem;">No ads. No paywalls. No gating. Forever free and open source.</div>
+      <div style="display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;"><i class="fas fa-lock-open"></i> Open Access</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;"><i class="fas fa-code"></i> Open Source</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;"><i class="fas fa-shield-alt"></i> No Credentials Stored</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;"><i class="fas fa-infinity"></i> Preserved for Future Batches</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BROWSE PAGE ===== -->
+<div class="page" id="page-browse">
+  <div class="page-header">
+    <div style="max-width:1200px;margin:0 auto;">
+      <h1><i class="fas fa-folder-open" style="color:var(--primary);margin-right:0.5rem"></i>Browse Papers</h1>
+      <p>Filter and explore 2,847 archived papers across all schools and courses.</p>
+    </div>
+  </div>
+  <div class="browse-layout">
+    <aside class="sidebar">
+      <div class="filter-group">
+        <div class="filter-label">Exam Type</div>
+        <div class="filter-options">
+          <div class="filter-option selected">All Types <span class="filter-count">2847</span></div>
+          <div class="filter-option">CAT 1 <span class="filter-count">842</span></div>
+          <div class="filter-option">CAT 2 <span class="filter-count">798</span></div>
+          <div class="filter-option">FAT <span class="filter-count">900</span></div>
+          <div class="filter-option">PAT <span class="filter-count">207</span></div>
+          <div class="filter-option">Assignment <span class="filter-count">100</span></div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">School</div>
+        <div class="filter-options">
+          <div class="filter-option selected">All Schools <span class="filter-count">2847</span></div>
+          <div class="filter-option">SCOPE <span class="filter-count">1204</span></div>
+          <div class="filter-option">SMEC <span class="filter-count">620</span></div>
+          <div class="filter-option">SELECT <span class="filter-count">480</span></div>
+          <div class="filter-option">SCAS <span class="filter-count">310</span></div>
+          <div class="filter-option">SBST <span class="filter-count">233</span></div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Academic Year</div>
+        <div class="filter-options">
+          <div class="filter-option selected">All Years</div>
+          <div class="filter-option">2024–25</div>
+          <div class="filter-option">2023–24</div>
+          <div class="filter-option">2022–23</div>
+          <div class="filter-option">2021–22</div>
+          <div class="filter-option">2020–21</div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Slot</div>
+        <div class="filter-options">
+          <div class="filter-option selected">All Slots</div>
+          <div class="filter-option">A1</div>
+          <div class="filter-option">B1</div>
+          <div class="filter-option">C1</div>
+          <div class="filter-option">D1</div>
+          <div class="filter-option">E1</div>
+        </div>
+      </div>
+    </aside>
+    <div class="browse-main">
+      <div class="browse-toolbar">
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search within results...">
+        </div>
+        <button class="sort-btn"><i class="fas fa-sort-amount-down"></i> Newest First</button>
+      </div>
+      <div class="results-info">Showing 2,847 papers — sorted by date uploaded</div>
+      <div class="papers-grid">
+        <div class="paper-card"><div class="paper-header"><span class="paper-type type-cat">CAT 1</span><span class="paper-year">2024</span></div><div class="paper-title">Data Structures and Algorithms</div><div class="paper-meta"><span class="paper-tag">CSE1006</span><span class="paper-tag">SCOPE</span><span class="paper-tag">A1</span></div><div class="paper-footer"><div class="paper-uploader"><div class="avatar-sm">R</div> Rahul K.</div><button class="btn-download"><i class="fas fa-download"></i> PDF</button></div></div>
+        <div class="paper-card"><div class="paper-header"><span class="paper-type type-fat">FAT</span><span class="paper-year">2024</span></div><div class="paper-title">Engineering Mathematics IV</div><div class="paper-meta"><span class="paper-tag">MAT2004</span><span class="paper-tag">SMEC</span><span class="paper-tag">B1</span></div><div class="paper-footer"><div class="paper-uploader"><div class="avatar-sm">A</div> Ananya S.</div><button class="btn-download"><i class="fas fa-download"></i> PDF</button></div></div>
+        <div class="paper-card"><div class="paper-header"><span class="paper-type type-pat">PAT</span><span class="paper-year">2024</span></div><div class="paper-title">Object Oriented Programming</div><div class="paper-meta"><span class="paper-tag">CSE1007</span><span class="paper-tag">SCOPE</span><span class="paper-tag">C1</span></div><div class="paper-footer"><div class="paper-uploader"><div class="avatar-sm">P</div> Priya M.</div><button class="btn-download"><i class="fas fa-image"></i> Image</button></div></div>
+        <div class="paper-card"><div class="paper-header"><span class="paper-type type-cat">CAT 2</span><span class="paper-year">2023</span></div><div class="paper-title">Computer Networks</div><div class="paper-meta"><span class="paper-tag">CSE3501</span><span class="paper-tag">SCOPE</span><span class="paper-tag">D1</span></div><div class="paper-footer"><div class="paper-uploader"><div class="avatar-sm">S</div> Suresh P.</div><button class="btn-download"><i class="fas fa-download"></i> PDF</button></div></div>
+        <div class="paper-card"><div class="paper-header"><span class="paper-type type-fat">FAT</span><span class="paper-year">2023</span></div><div class="paper-title">Digital Signal Processing</div><div class="paper-meta"><span class="paper-tag">ECE3003</span><span class="paper-tag">SELECT</span><span class="paper-tag">E1</span></div><div class="paper-footer"><div class="paper-uploader"><div class="avatar-sm">V</div> Vishnu T.</div><button class="btn-download"><i class="fas fa-download"></i> PDF</button></div></div>
+        <div class="paper-card"><div class="paper-header"><span class="paper-type type-cat">CAT 1</span><span class="paper-year">2024</span></div><div class="paper-title">Theory of Computation</div><div class="paper-meta"><span class="paper-tag">CSE3002</span><span class="paper-tag">SCOPE</span><span class="paper-tag">E1</span></div><div class="paper-footer"><div class="paper-uploader"><div class="avatar-sm">N</div> Nidhi R.</div><button class="btn-download"><i class="fas fa-download"></i> PDF</button></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SEARCH PAGE ===== -->
+<div class="page" id="page-search">
+  <div class="page-header">
+    <div style="max-width:900px;margin:0 auto;">
+      <h1><i class="fas fa-search" style="color:var(--primary);margin-right:0.5rem"></i>Smart Search</h1>
+      <p>Find exactly what you need across all papers and questions.</p>
+    </div>
+  </div>
+  <div class="search-container">
+    <div class="search-hero">
+      <h2>What are you looking for?</h2>
+      <div class="search-big">
+        <i class="fas fa-search" style="color:var(--text3)"></i>
+        <input type="text" placeholder="Course code, subject name, topic, year...">
+        <button>Search</button>
+      </div>
+      <div class="search-suggestions">
+        <div class="suggestion-chip">CSE1006</div>
+        <div class="suggestion-chip">OOP FAT 2024</div>
+        <div class="suggestion-chip">DBMS CAT 2</div>
+        <div class="suggestion-chip">MAT1001</div>
+        <div class="suggestion-chip">Data Structures</div>
+        <div class="suggestion-chip">Slot A1 2024</div>
+        <div class="suggestion-chip">Computer Networks</div>
+        <div class="suggestion-chip">Theory of Computation</div>
+      </div>
+    </div>
+    <div style="margin-bottom:1.5rem;">
+      <div class="section-title" style="font-size:1.1rem;margin-bottom:0.8rem;">Trending Searches</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.6rem;">
+        <span class="filter-pill active">DSA</span>
+        <span class="filter-pill">DBMS</span>
+        <span class="filter-pill">OS</span>
+        <span class="filter-pill">CN</span>
+        <span class="filter-pill">OOP</span>
+        <span class="filter-pill">TOC</span>
+        <span class="filter-pill">EM3</span>
+        <span class="filter-pill">Microprocessors</span>
+        <span class="filter-pill">AI</span>
+        <span class="filter-pill">ML</span>
+      </div>
+    </div>
+    <div>
+      <div class="section-title" style="font-size:1.1rem;margin-bottom:0.8rem;">Browse by Category</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem;">
+        <div class="qcard" style="padding:1rem;" onclick="showPage('browse')"><div style="font-size:1.5rem;margin-bottom:0.4rem;"></div><div class="qcard-title" style="font-size:0.88rem;">CAT Papers</div></div>
+        <div class="qcard" style="padding:1rem;" onclick="showPage('browse')"><div style="font-size:1.5rem;margin-bottom:0.4rem;"></div><div class="qcard-title" style="font-size:0.88rem;">FAT Papers</div></div>
+        <div class="qcard" style="padding:1rem;" onclick="showPage('browse')"><div style="font-size:1.5rem;margin-bottom:0.4rem;"></div><div class="qcard-title" style="font-size:0.88rem;">PAT Papers</div></div>
+        <div class="qcard" style="padding:1rem;" onclick="showPage('qbank')"><div style="font-size:1.5rem;margin-bottom:0.4rem;"></div><div class="qcard-title" style="font-size:0.88rem;">Question Bank</div></div>
+        <div class="qcard" style="padding:1rem;" onclick="showPage('memory')"><div style="font-size:1.5rem;margin-bottom:0.4rem;"></div><div class="qcard-title" style="font-size:0.88rem;">Memory Q's</div></div>
+        <div class="qcard" style="padding:1rem;" onclick="showPage('courses')"><div style="font-size:1.5rem;margin-bottom:0.4rem;"></div><div class="qcard-title" style="font-size:0.88rem;">By Course</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COURSES PAGE ===== -->
+<div class="page" id="page-courses">
+  <div class="page-header">
+    <div style="max-width:1100px;margin:0 auto;">
+      <h1><i class="fas fa-graduation-cap" style="color:var(--primary);margin-right:0.5rem"></i>Course Pages</h1>
+      <p>Find all archived material for any specific course.</p>
+    </div>
+  </div>
+  <div class="courses-container">
+    <div class="browse-toolbar" style="margin-bottom:1.5rem;">
+      <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Search by code or name..."></div>
+      <div class="filter-pill active">All</div>
+      <div class="filter-pill">SCOPE</div>
+      <div class="filter-pill">SMEC</div>
+      <div class="filter-pill">SELECT</div>
+      <div class="filter-pill">SCAS</div>
+    </div>
+    <div class="courses-grid">
+      <div class="course-card"><div class="course-code">CSE1006</div><div class="course-name">Data Structures and Algorithms</div><div class="course-stats"><span class="course-stat"><i class="fas fa-file"></i> 48 papers</span><span class="course-stat"><i class="fas fa-question"></i> 320 questions</span></div></div>
+      <div class="course-card"><div class="course-code">CSE1007</div><div class="course-name">Object Oriented Programming</div><div class="course-stats"><span class="course-stat"><i class="fas fa-file"></i> 55 papers</span><span class="course-stat"><i class="fas fa-question"></i> 410 questions</span></div></div>
+      <div class="course-card"><div class="course-code">MAT1001</div><div class="course-name">Engineering Mathematics I</div><div class="course-stats"><span class="course-stat"><i class="fas fa-file"></i> 62 papers</span><span class="course-stat"><i class="fas fa-question"></i> 500 questions</span></div></div>
+      <div class="course-card"><div class="course-code">CSE3501</div><div class="course-name">Computer Networks</div><div class="course-stats"><span class="course-stat"><i class="fas fa-file"></i> 40 papers</span><span class="course-stat"><i class="fas fa-question"></i> 280 questions</span></div></div>
+      <div class="course-card"><div class="course-code">CSE3002</div><div class="course-name">Theory of Computation</div><div class="course-stats"><span class="course-stat"><i class="fas fa-file"></i> 36 papers</span><span class="course-stat"><i class="fas fa-question"></i> 240 questions</span></div></div>
+      <div class="course-card"><div class="course-code">ECE3003</div><div class="course-name">Digital Signal Processing</div><div class="course-stats"><span class="course-stat"><i class="fas fa-file"></i> 29 papers</span><span class="course-stat"><i class="fas fa-question"></i> 190 questions</span></div></div>
+      <div class="course-card"><div class="course-code">CSE4001</div><div class="course-name">Artificial Intelligence</div><div class="course-stats"><span class="course-stat"><i class="fas fa-file"></i> 31 papers</span><span class="course-stat"><i class="fas fa-question"></i> 210 questions</span></div></div>
+      <div class="course-card"><div class="course-code">MAT2004</div><div class="course-name">Engineering Mathematics IV</div><div class="course-stats"><span class="course-stat"><i class="fas fa-file"></i> 58 papers</span><span class="course-stat"><i class="fas fa-question"></i> 460 questions</span></div></div>
+      <div class="course-card"><div class="course-code">CSE3001</div><div class="course-name">Operating Systems</div><div class="course-stats"><span class="course-stat"><i class="fas fa-file"></i> 44 papers</span><span class="course-stat"><i class="fas fa-question"></i> 310 questions</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UPLOAD PAGE ===== -->
+<div class="page" id="page-upload">
+  <div class="page-header">
+    <div style="max-width:760px;margin:0 auto;">
+      <h1><i class="fas fa-upload" style="color:var(--primary);margin-right:0.5rem"></i>Upload a Paper</h1>
+      <p>Share your paper with the entire VIT community. Takes less than 2 minutes.</p>
+    </div>
+  </div>
+  <div class="upload-container">
+    <div class="step-indicator">
+      <div class="step active"><div class="step-num">1</div> Upload File</div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-num">2</div> Add Details</div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-num">3</div> Review</div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-num">4</div> Submit</div>
+    </div>
+    <div class="upload-zone" id="uploadZone">
+      <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+      <h3>Drag & Drop your file here</h3>
+      <p>Supports PDF, PNG, JPG, JPEG — Max 25MB</p>
+      <div class="or">— or —</div>
+      <button class="btn-primary" onclick="showToast('File picker would open here!')"><i class="fas fa-folder-open"></i> Browse Files</button>
+    </div>
+    <div class="form-card">
+      <h3><i class="fas fa-info-circle" style="color:var(--primary)"></i> Paper Details</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Course Code *</label>
+          <input type="text" placeholder="e.g. CSE1006">
+        </div>
+        <div class="form-group">
+          <label>Course Name</label>
+          <input type="text" placeholder="Auto-filled from code">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Exam Type *</label>
+          <select>
+            <option>Select exam type...</option>
+            <option>CAT 1</option>
+            <option>CAT 2</option>
+            <option>FAT</option>
+            <option>PAT</option>
+            <option>Assignment</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Academic Year *</label>
+          <select>
+            <option>2024–25</option>
+            <option>2023–24</option>
+            <option>2022–23</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Slot *</label>
+          <select>
+            <option>Select slot...</option>
+            <option>A1</option><option>A2</option>
+            <option>B1</option><option>B2</option>
+            <option>C1</option><option>C2</option>
+            <option>D1</option><option>D2</option>
+            <option>E1</option><option>E2</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>School / Department *</label>
+          <select>
+            <option>Select school...</option>
+            <option>SCOPE</option><option>SMEC</option>
+            <option>SELECT</option><option>SCAS</option>
+            <option>SBST</option><option>SSL</option>
+            <option>SIAS</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Exam Date</label>
+        <input type="date">
+      </div>
+      <div class="form-group">
+        <label>Additional Notes (Optional)</label>
+        <textarea rows="3" placeholder="Any context, missing pages, or notes for reviewers..."></textarea>
+      </div>
+    </div>
+    <div class="form-card">
+      <h3><i class="fas fa-user" style="color:var(--primary)"></i> Your Details (Optional)</h3>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:1rem;">Stay anonymous or get credited for your contribution — your choice.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Display Name</label>
+          <input type="text" placeholder="How you want to be credited">
+        </div>
+        <div class="form-group">
+          <label>Registration Number</label>
+          <input type="text" placeholder="Optional, for verification">
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:1rem;justify-content:flex-end;">
+      <button class="btn-outline">Save as Draft</button>
+      <button class="btn-primary" onclick="showToast('✅ Paper submitted for review! Thank you!')"><i class="fas fa-paper-plane"></i> Submit Paper</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MEMORY QUESTIONS ===== -->
+<div class="page" id="page-memory">
+  <div class="page-header">
+    <div style="max-width:900px;margin:0 auto;">
+      <h1><i class="fas fa-brain" style="color:var(--primary);margin-right:0.5rem"></i>Memory Questions</h1>
+      <p>Questions recalled from exams — when official papers aren't available.</p>
+    </div>
+  </div>
+  <div class="memory-container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+      <div class="memory-tabs">
+        <div class="memory-tab active">Browse Memory Q's</div>
+        <div class="memory-tab" onclick="showToast('Submission form ready!')">Submit a Memory Q</div>
+        <div class="memory-tab">My Submissions</div>
+      </div>
+      <button class="btn-primary" onclick="showToast('Submission form opened!')"><i class="fas fa-plus"></i> Add Question</button>
+    </div>
+    <div class="qbank-filters">
+      <div class="filter-pill active">All</div>
+      <div class="filter-pill">PAT</div>
+      <div class="filter-pill">CAT 1</div>
+      <div class="filter-pill">CAT 2</div>
+      <div class="filter-pill">FAT</div>
+      <div class="filter-pill">SCOPE</div>
+      <div class="filter-pill">SMEC</div>
+      <div class="filter-pill">SELECT</div>
+    </div>
+    <div class="question-list">
+      <div class="question-card">
+        <div class="q-num">Q1</div>
+        <div class="q-body">
+          <div class="q-text">Explain the concept of deadlock in Operating Systems and describe the four necessary conditions for deadlock to occur. [10M]</div>
+          <div class="q-tags"><span class="q-tag">OS</span><span class="q-tag">CSE3001</span><span class="q-tag">SCOPE</span><span class="q-tag">Memory-based</span></div>
+          <div class="q-meta"><span>PAT • Nov 2024</span><span class="q-freq"><i class="fas fa-redo"></i> Appears 3 times</span><span>Submitted by Rahul K.</span></div>
+        </div>
+      </div>
+      <div class="question-card">
+        <div class="q-num">Q2</div>
+        <div class="q-body">
+          <div class="q-text">Write a Java program to implement a Binary Search Tree with insert, delete, and inorder traversal operations. [15M]</div>
+          <div class="q-tags"><span class="q-tag">DSA</span><span class="q-tag">CSE1006</span><span class="q-tag">Trees</span><span class="q-tag">Memory-based</span></div>
+          <div class="q-meta"><span>PAT • Oct 2024</span><span class="q-freq"><i class="fas fa-redo"></i> Appears 5 times</span><span>Submitted by Priya M.</span></div>
+        </div>
+      </div>
+      <div class="question-card">
+        <div class="q-num">Q3</div>
+        <div class="q-body">
+          <div class="q-text">Prove that the language L = {aⁿbⁿ | n ≥ 1} is not regular using the Pumping Lemma. [10M]</div>
+          <div class="q-tags"><span class="q-tag">TOC</span><span class="q-tag">CSE3002</span><span class="q-tag">Pumping Lemma</span><span class="q-tag">Memory-based</span></div>
+          <div class="q-meta"><span>CAT 2 • Sep 2024</span><span class="q-freq"><i class="fas fa-redo"></i> Appears 7 times</span><span>Submitted by Ananya S.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUESTION BANK ===== -->
+<div class="page" id="page-qbank">
+  <div class="page-header">
+    <div style="max-width:1100px;margin:0 auto;">
+      <h1><i class="fas fa-lightbulb" style="color:var(--primary);margin-right:0.5rem"></i>Question Bank</h1>
+      <p>12,400+ questions indexed from past papers, filterable by topic, course, and exam.</p>
+    </div>
+  </div>
+  <div class="qbank-container">
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+      <div class="search-bar" style="flex:1;min-width:200px;"><i class="fas fa-search"></i><input type="text" placeholder="Search questions by keyword or topic..."></div>
+      <button class="btn-primary" onclick="showToast('Quiz mode activated!')"><i class="fas fa-gamepad"></i> Quiz Mode</button>
+    </div>
+    <div class="qbank-filters">
+      <div class="filter-pill active">All Subjects</div>
+      <div class="filter-pill">DSA</div>
+      <div class="filter-pill">OOP</div>
+      <div class="filter-pill">DBMS</div>
+      <div class="filter-pill">OS</div>
+      <div class="filter-pill">CN</div>
+      <div class="filter-pill">TOC</div>
+      <div class="filter-pill">AI</div>
+      <div class="filter-pill">Maths</div>
+    </div>
+    <div class="qbank-filters">
+      <span style="font-size:0.8rem;color:var(--text3);align-self:center;">Exam: </span>
+      <div class="filter-pill active">All</div>
+      <div class="filter-pill">CAT 1</div>
+      <div class="filter-pill">CAT 2</div>
+      <div class="filter-pill">FAT</div>
+      <div class="filter-pill">PAT</div>
+    </div>
+    <div class="results-info">Showing 12,400 questions</div>
+    <div class="question-list">
+      <div class="question-card">
+        <div class="q-num">01</div>
+        <div class="q-body">
+          <div class="q-text">What is the time complexity of Quicksort in the average case? Justify your answer with proper derivation. [5M]</div>
+          <div class="q-tags"><span class="q-tag">Sorting</span><span class="q-tag">Complexity</span><span class="q-tag">CSE1006</span></div>
+          <div class="q-meta"><span>CAT 2 • 2024</span><span class="q-freq"><i class="fas fa-redo"></i> Asked 9 times</span><span>Source: 3 papers</span></div>
+        </div>
+      </div>
+      <div class="question-card">
+        <div class="q-num">02</div>
+        <div class="q-body">
+          <div class="q-text">Differentiate between process and thread. Why is context switching faster in threads than processes? [7M]</div>
+          <div class="q-tags"><span class="q-tag">Processes</span><span class="q-tag">Threads</span><span class="q-tag">CSE3001</span></div>
+          <div class="q-meta"><span>FAT • 2024</span><span class="q-freq"><i class="fas fa-redo"></i> Asked 12 times</span><span>Source: 5 papers</span></div>
+        </div>
+      </div>
+      <div class="question-card">
+        <div class="q-num">03</div>
+        <div class="q-body">
+          <div class="q-text">What are the ACID properties of a database transaction? Explain each with an example. [10M]</div>
+          <div class="q-tags"><span class="q-tag">ACID</span><span class="q-tag">Transactions</span><span class="q-tag">CSE3505</span></div>
+          <div class="q-meta"><span>CAT 1 • 2023</span><span class="q-freq"><i class="fas fa-redo"></i> Asked 15 times</span><span>Source: 7 papers</span></div>
+        </div>
+      </div>
+      <div class="question-card">
+        <div class="q-num">04</div>
+        <div class="q-body">
+          <div class="q-text">Construct an NFA for the language that accepts all strings over {a,b} ending with 'abb'. Convert it to a DFA. [12M]</div>
+          <div class="q-tags"><span class="q-tag">NFA</span><span class="q-tag">DFA</span><span class="q-tag">CSE3002</span></div>
+          <div class="q-meta"><span>CAT 1 • 2024</span><span class="q-freq"><i class="fas fa-redo"></i> Asked 6 times</span><span>Source: 3 papers</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LEADERBOARD ===== -->
+<div class="page" id="page-leaderboard">
+  <div class="page-header">
+    <div style="max-width:900px;margin:0 auto;">
+      <h1><i class="fas fa-trophy" style="color:var(--primary);margin-right:0.5rem"></i>Leaderboard</h1>
+      <p>Recognizing our most dedicated contributors.</p>
+    </div>
+  </div>
+  <div class="leaderboard-container">
+    <div style="display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;">
+      <div class="memory-tab active">All Time</div>
+      <div class="memory-tab">This Month</div>
+      <div class="memory-tab">This Week</div>
+      <div class="memory-tab">By School</div>
+    </div>
+    <div class="top3">
+      <div class="top-card silver" style="transform:translateY(20px)">
+        <div class="rank-badge">🥈</div>
+        <div class="top-avatar">A</div>
+        <div class="top-name">Ananya S.</div>
+        <div class="top-school">SCOPE</div>
+        <div class="top-points">2,840 <span>pts</span></div>
+        <div style="font-size:0.78rem;color:var(--text3);margin-top:0.4rem;">142 papers</div>
+      </div>
+      <div class="top-card gold">
+        <div class="rank-badge">🥇</div>
+        <div class="top-avatar" style="width:72px;height:72px;font-size:1.6rem;">R</div>
+        <div class="top-name">Rahul K.</div>
+        <div class="top-school">SCOPE</div>
+        <div class="top-points">3,420 <span>pts</span></div>
+        <div style="font-size:0.78rem;color:var(--text3);margin-top:0.4rem;">185 papers</div>
+      </div>
+      <div class="top-card bronze" style="transform:translateY(35px)">
+        <div class="rank-badge">🥉</div>
+        <div class="top-avatar">P</div>
+        <div class="top-name">Priya M.</div>
+        <div class="top-school">SMEC</div>
+        <div class="top-points">2,190 <span>pts</span></div>
+        <div style="font-size:0.78rem;color:var(--text3);margin-top:0.4rem;">108 papers</div>
+      </div>
+    </div>
+    <div class="lb-table">
+      <div class="lb-row" style="background:var(--bg2);font-weight:700;font-size:0.78rem;color:var(--text3);">
+        <div class="lb-rank">#</div>
+        <div style="width:36px;"></div>
+        <div style="flex:1;">CONTRIBUTOR</div>
+        <div>BADGES</div>
+        <div>POINTS</div>
+      </div>
+      <div class="lb-row"><div class="lb-rank">4</div><div class="lb-avatar">S</div><div class="lb-info"><div class="lb-name">Suresh P.</div><div class="lb-meta">SELECT • 98 papers</div></div><div class="lb-badges"><span class="lb-badge"></span><span class="lb-badge"></span></div><div class="lb-pts">1,920</div></div>
+      <div class="lb-row"><div class="lb-rank">5</div><div class="lb-avatar">V</div><div class="lb-info"><div class="lb-name">Vishnu T.</div><div class="lb-meta">SELECT • 87 papers</div></div><div class="lb-badges"><span class="lb-badge"></span></div><div class="lb-pts">1,740</div></div>
+      <div class="lb-row"><div class="lb-rank">6</div><div class="lb-avatar">N</div><div class="lb-info"><div class="lb-name">Nidhi R.</div><div class="lb-meta">SCOPE • 72 papers</div></div><div class="lb-badges"><span class="lb-badge"></span></div><div class="lb-pts">1,440</div></div>
+      <div class="lb-row"><div class="lb-rank">7</div><div class="lb-avatar">K</div><div class="lb-info"><div class="lb-name">Karthik M.</div><div class="lb-meta">SCAS • 64 papers</div></div><div class="lb-badges"><span class="lb-badge"></span></div><div class="lb-pts">1,280</div></div>
+      <div class="lb-row"><div class="lb-rank">8</div><div class="lb-avatar">D</div><div class="lb-info"><div class="lb-name">Divya L.</div><div class="lb-meta">SBST • 58 papers</div></div><div class="lb-badges"><span class="lb-badge"></span></div><div class="lb-pts">1,160</div></div>
+      <div class="lb-row"><div class="lb-rank">9</div><div class="lb-avatar">M</div><div class="lb-info"><div class="lb-name">Mihir G.</div><div class="lb-meta">SCOPE • 50 papers</div></div><div class="lb-badges"></div><div class="lb-pts">1,000</div></div>
+      <div class="lb-row"><div class="lb-rank">10</div><div class="lb-avatar">T</div><div class="lb-info"><div class="lb-name">Tejas B.</div><div class="lb-meta">SMEC • 44 papers</div></div><div class="lb-badges"></div><div class="lb-pts">880</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REQUESTS PAGE ===== -->
+<div class="page" id="page-request">
+  <div class="page-header">
+    <div style="max-width:900px;margin:0 auto;">
+      <h1><i class="fas fa-hand-paper" style="color:var(--primary);margin-right:0.5rem"></i>Request Papers</h1>
+      <p>Can't find a paper? Request it and the community will upload it.</p>
+    </div>
+  </div>
+  <div class="request-container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+      <div style="display:flex;gap:0.5rem;">
+        <div class="memory-tab active">Open Requests</div>
+        <div class="memory-tab">Fulfilled</div>
+        <div class="memory-tab">My Requests</div>
+      </div>
+      <button class="btn-primary" onclick="showToast('Request form opened!')"><i class="fas fa-plus"></i> New Request</button>
+    </div>
+    <div class="request-list">
+      <div class="request-card">
+        <div class="request-votes"><div class="vote-btn voted"><i class="fas fa-chevron-up"></i></div><div class="vote-count">34</div></div>
+        <div class="request-info"><div class="request-title">CSE4001 — Artificial Intelligence FAT 2024 (Slot A1)</div><div class="request-meta">Requested by anonymous • 3 days ago</div></div>
+        <div class="request-status status-open">Open</div>
+      </div>
+      <div class="request-card">
+        <div class="request-votes"><div class="vote-btn"><i class="fas fa-chevron-up"></i></div><div class="vote-count">28</div></div>
+        <div class="request-info"><div class="request-title">MAT3002 — Probability and Statistics CAT 1 2024 (Slot B1)</div><div class="request-meta">Requested by Suresh P. • 5 days ago</div></div>
+        <div class="request-status status-inprogress">In Progress</div>
+      </div>
+      <div class="request-card">
+        <div class="request-votes"><div class="vote-btn"><i class="fas fa-chevron-up"></i></div><div class="vote-count">19</div></div>
+        <div class="request-info"><div class="request-title">CSE3503 — Software Engineering FAT 2023</div><div class="request-meta">Requested by Nidhi R. • 1 week ago</div></div>
+        <div class="request-status status-open">Open</div>
+      </div>
+      <div class="request-card">
+        <div class="request-votes"><div class="vote-btn"><i class="fas fa-chevron-up"></i></div><div class="vote-count">12</div></div>
+        <div class="request-info"><div class="request-title">ECE4005 — VLSI Design CAT 2 2024</div><div class="request-meta">Requested by Karthik M. • 2 weeks ago</div></div>
+        <div class="request-status status-fulfilled">Fulfilled ✓</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STATISTICS PAGE ===== -->
+<div class="page" id="page-stats">
+  <div class="page-header">
+    <div style="max-width:1100px;margin:0 auto;">
+      <h1><i class="fas fa-chart-bar" style="color:var(--primary);margin-right:0.5rem"></i>Archive Statistics</h1>
+      <p>Live insights into the VITArchive community's growth and coverage.</p>
+    </div>
+  </div>
+  <div class="stats-container">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon"></div><div class="stat-num">2,847</div><div class="stat-label">Total Papers</div></div>
+      <div class="stat-card"><div class="stat-icon"></div><div class="stat-num">12,400+</div><div class="stat-label">Questions Indexed</div></div>
+      <div class="stat-card"><div class="stat-icon"></div><div class="stat-num">480</div><div class="stat-label">Courses Covered</div></div>
+      <div class="stat-card"><div class="stat-icon"></div><div class="stat-num">1,200+</div><div class="stat-label">Contributors</div></div>
+      <div class="stat-card"><div class="stat-icon"></div><div class="stat-num">48,000+</div><div class="stat-label">Downloads</div></div>
+      <div class="stat-card"><div class="stat-icon"></div><div class="stat-num">7</div><div class="stat-label">Schools Covered</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="chart-container">
+        <div class="chart-title">Papers by School</div>
+        <div class="bar-chart">
+          <div class="bar-group"><div class="bar" style="height:130px;"></div><div class="bar-label">SCOPE</div></div>
+          <div class="bar-group"><div class="bar" style="height:85px;background:linear-gradient(to top,var(--secondary),#FFB3C1)"></div><div class="bar-label">SMEC</div></div>
+          <div class="bar-group"><div class="bar" style="height:68px;background:linear-gradient(to top,var(--accent),#B8FFD9)"></div><div class="bar-label">SELECT</div></div>
+          <div class="bar-group"><div class="bar" style="height:42px;background:linear-gradient(to top,var(--accent2),#FFE9A0)"></div><div class="bar-label">SCAS</div></div>
+          <div class="bar-group"><div class="bar" style="height:32px;"></div><div class="bar-label">SBST</div></div>
+          <div class="bar-group"><div class="bar" style="height:24px;background:linear-gradient(to top,#A855F7,#DDD6FE)"></div><div class="bar-label">SSL</div></div>
+        </div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Papers by Exam Type</div>
+        <div class="donut-container">
+          <div class="donut"></div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--primary)"></div> CAT 1 — 842 (30%)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--secondary)"></div> FAT — 900 (32%)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div> CAT 2 — 798 (28%)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div> PAT — 307 (11%)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-container">
+      <div class="chart-title">Monthly Uploads (2024–25)</div>
+      <div class="bar-chart">
+        <div class="bar-group"><div class="bar" style="height:40px;"></div><div class="bar-label">Aug</div></div>
+        <div class="bar-group"><div class="bar" style="height:60px;"></div><div class="bar-label">Sep</div></div>
+        <div class="bar-group"><div class="bar" style="height:100px;"></div><div class="bar-label">Oct</div></div>
+        <div class="bar-group"><div class="bar" style="height:140px;"></div><div class="bar-label">Nov</div></div>
+        <div class="bar-group"><div class="bar" style="height:90px;"></div><div class="bar-label">Dec</div></div>
+        <div class="bar-group"><div class="bar" style="height:50px;"></div><div class="bar-label">Jan</div></div>
+        <div class="bar-group"><div class="bar" style="height:130px;"></div><div class="bar-label">Feb</div></div>
+        <div class="bar-group"><div class="bar" style="height:155px;"></div><div class="bar-label">Mar</div></div>
+        <div class="bar-group"><div class="bar" style="height:80px;"></div><div class="bar-label">Apr</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONTRIBUTORS PAGE ===== -->
+<div class="page" id="page-contributors">
+  <div class="page-header">
+    <div style="max-width:1100px;margin:0 auto;">
+      <h1><i class="fas fa-users" style="color:var(--primary);margin-right:0.5rem"></i>Contributors</h1>
+      <p>The amazing students who make VITArchive possible.</p>
+    </div>
+  </div>
+  <div class="contributors-container">
+    <div style="display:flex;gap:0.8rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <div class="filter-pill active">All</div>
+      <div class="filter-pill">SCOPE</div>
+      <div class="filter-pill">SMEC</div>
+      <div class="filter-pill">SELECT</div>
+      <div class="filter-pill">SCAS</div>
+      <div class="filter-pill">Top 100</div>
+    </div>
+    <div class="contrib-grid">
+      <div class="contrib-card"><div class="contrib-avatar">R</div><div class="contrib-info"><div class="contrib-name">Rahul K.</div><div class="contrib-school">SCOPE • 3rd Year</div><div class="contrib-stats"><span class="contrib-stat"><i class="fas fa-file"></i> 185 papers</span><span class="contrib-stat"><i class="fas fa-star"></i> 3,420 pts</span></div><div class="contrib-badges-row"><span>🥇</span></div></div></div>
+      <div class="contrib-card"><div class="contrib-avatar">A</div><div class="contrib-info"><div class="contrib-name">Ananya S.</div><div class="contrib-school">SCOPE • 4th Year</div><div class="contrib-stats"><span class="contrib-stat"><i class="fas fa-file"></i> 142 papers</span><span class="contrib-stat"><i class="fas fa-star"></i> 2,840 pts</span></div><div class="contrib-badges-row"><span>🥈</span><span></span><span></span></div></div></div>
+      <div class="contrib-card"><div class="contrib-avatar">P</div><div class="contrib-info"><div class="contrib-name">Priya M.</div><div class="contrib-school">SMEC • 3rd Year</div><div class="contrib-stats"><span class="contrib-stat"><i class="fas fa-file"></i> 108 papers</span><span class="contrib-stat"><i class="fas fa-star"></i> 2,190 pts</span></div><div class="contrib-badges-row"><span>🥉</span><span></span></div></div></div>
+      <div class="contrib-card"><div class="contrib-avatar">S</div><div class="contrib-info"><div class="contrib-name">Suresh P.</div><div class="contrib-school">SELECT • 2nd Year</div><div class="contrib-stats"><span class="contrib-stat"><i class="fas fa-file"></i> 98 papers</span><span class="contrib-stat"><i class="fas fa-star"></i> 1,920 pts</span></div><div class="contrib-badges-row"></div></div></div>
+      <div class="contrib-card"><div class="contrib-avatar">V</div><div class="contrib-info"><div class="contrib-name">Vishnu T.</div><div class="contrib-school">SELECT • 4th Year</div><div class="contrib-stats"><span class="contrib-stat"><i class="fas fa-file"></i> 87 papers</span><span class="contrib-stat"><i class="fas fa-star"></i> 1,740 pts</span></div><div class="contrib-badges-row"><span></span></div></div></div>
+      <div class="contrib-card"><div class="contrib-avatar">N</div><div class="contrib-info"><div class="contrib-name">Nidhi R.</div><div class="contrib-school">SCOPE • 3rd Year</div><div class="contrib-stats"><span class="contrib-stat"><i class="fas fa-file"></i> 72 papers</span><span class="contrib-stat"><i class="fas fa-star"></i> 1,440 pts</span></div><div class="contrib-badges-row"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GUIDELINES PAGE ===== -->
+<div class="page" id="page-guidelines">
+  <div class="page-header">
+    <div style="max-width:800px;margin:0 auto;">
+      <h1><i class="fas fa-book" style="color:var(--primary);margin-right:0.5rem"></i>Upload Guidelines</h1>
+      <p>Please read before contributing to ensure quality and safety for everyone.</p>
+    </div>
+  </div>
+  <div class="guidelines-container">
+    <div class="guideline-section">
+      <h3><i class="fas fa-check-circle" style="color:var(--accent)"></i> What You Should Upload</h3>
+      <div class="guideline-items">
+        <div class="guideline-item"><i class="fas fa-check do-icon"></i> CAT, FAT, PAT papers you have personally appeared for</div>
+        <div class="guideline-item"><i class="fas fa-check do-icon"></i> Memory-based question reconstructions from recent exams</div>
+        <div class="guideline-item"><i class="fas fa-check do-icon"></i> VITCOLAB assignment questions (screenshots or typed)</div>
+        <div class="guideline-item"><i class="fas fa-check do-icon"></i> Papers shared with you by classmates with their consent</div>
+        <div class="guideline-item"><i class="fas fa-check do-icon"></i> Scanned or photographed papers — quality doesn't need to be perfect</div>
+      </div>
+    </div>
+    <div class="guideline-section">
+      <h3><i class="fas fa-times-circle" style="color:var(--secondary)"></i> What You Should NOT Upload</h3>
+      <div class="guideline-items">
+        <div class="guideline-item"><i class="fas fa-times dont-icon"></i> Papers obtained through unauthorized access to faculty systems</div>
+        <div class="guideline-item"><i class="fas fa-times dont-icon"></i> Content that violates VIT's academic integrity policies</div>
+        <div class="guideline-item"><i class="fas fa-times dont-icon"></i> Copyrighted textbook pages or paid study material</div>
+        <div class="guideline-item"><i class="fas fa-times dont-icon"></i> Personal information of faculty or other students</div>
+        <div class="guideline-item"><i class="fas fa-times dont-icon"></i> Deliberately incorrect or fabricated question papers</div>
+      </div>
+    </div>
+    <div class="guideline-section">
+      <h3><i class="fas fa-tag" style="color:var(--accent2)"></i> Naming & Metadata Standards</h3>
+      <div class="guideline-items">
+        <div class="guideline-item"><i class="fas fa-info-circle" style="color:var(--accent2)"></i> Always fill course code, exam type, year, and slot</div>
+        <div class="guideline-item"><i class="fas fa-info-circle" style="color:var(--accent2)"></i> Double-check course codes against VTOP before submitting</div>
+        <div class="guideline-item"><i class="fas fa-info-circle" style="color:var(--accent2)"></i> If unsure of exact date, provide approximate month and year</div>
+        <div class="guideline-item"><i class="fas fa-info-circle" style="color:var(--accent2)"></i> Use the notes field to mention if paper is incomplete or memory-based</div>
+      </div>
+    </div>
+    <div class="guideline-section">
+      <h3><i class="fas fa-shield-alt" style="color:var(--primary)"></i> Legal & Ethical Commitments</h3>
+      <div class="guideline-items">
+        <div class="guideline-item"><i class="fas fa-lock" style="color:var(--primary)"></i> We do not scrape or automate on VTOP in any way</div>
+        <div class="guideline-item"><i class="fas fa-lock" style="color:var(--primary)"></i> No VIT credentials are stored — ever</div>
+        <div class="guideline-item"><i class="fas fa-lock" style="color:var(--primary)"></i> This platform is fully non-commercial and open source</div>
+        <div class="guideline-item"><i class="fas fa-lock" style="color:var(--primary)"></i> All access is free — no gating or monetization</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FAQ PAGE ===== -->
+<div class="page" id="page-faq">
+  <div class="page-header">
+    <div style="max-width:760px;margin:0 auto;">
+      <h1><i class="fas fa-question-circle" style="color:var(--primary);margin-right:0.5rem"></i>FAQ</h1>
+      <p>Answers to the most common questions about VITArchive.</p>
+    </div>
+  </div>
+  <div class="faq-container">
+    <div class="faq-item open">
+      <div class="faq-q" onclick="toggleFaq(this)">Is VITArchive officially affiliated with VIT University? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a"><div class="faq-a-inner">No. VITArchive is a completely independent, student-run initiative. It is not affiliated with, endorsed by, or officially associated with VIT University. All content is contributed by students, for students.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Do I need to login to view or download papers? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a"><div class="faq-a-inner">No login is required to browse or download any paper. All content is freely accessible to everyone. Login is only optional — for personalization features like seeing your enrolled courses first, or tracking your contribution history.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Is it safe to upload papers here? Will I get into trouble? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a"><div class="faq-a-inner">Uploading papers you personally appeared for is generally considered safe. We recommend avoiding papers obtained through unauthorized means. Our platform is designed for sharing legally obtainable academic material. Anonymous uploads are also supported if you prefer privacy.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How are memory-based questions verified? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a"><div class="faq-a-inner">Memory-based questions are clearly labeled as such. Multiple students often submit similar questions independently, and when they match, confidence in accuracy increases. Reviewers monitor these submissions and flag inconsistencies. We always recommend treating memory-based content as approximate.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">What happens to duplicate papers? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a"><div class="faq-a-inner">The system automatically checks for duplicates using metadata comparison and file hashing. If a potential duplicate is detected, it's flagged for reviewer intervention. The best quality version is kept, and the contributor of the duplicate is still credited.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How do I earn points and badges? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a"><div class="faq-a-inner">Points are earned by uploading verified papers, contributing memory questions, fulfilling paper requests, and helping with moderation. Badges are awarded for milestones like "First Upload," "10 Papers Streak," "Top Contributor of the Month," and more. Points never restrict access — they're purely for recognition.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Will this platform survive after current students graduate? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a"><div class="faq-a-inner">Yes! This is the core purpose of VITArchive — to be a persistent academic memory for VIT that outlives individual batches. The platform is open source, and school/department representatives ensure continued maintenance as student batches transition.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">I found an error or incorrect paper — what should I do? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a"><div class="faq-a-inner">Every paper and question has a "Report Issue" button. Use it to flag errors, incorrect metadata, or quality issues. Our reviewer team will address flagged content within 48 hours.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ROADMAP PAGE ===== -->
+<div class="page" id="page-roadmap">
+  <div class="page-header">
+    <div style="max-width:800px;margin:0 auto;">
+      <h1><i class="fas fa-map" style="color:var(--primary);margin-right:0.5rem"></i>Roadmap</h1>
+      <p>Where we've been, where we are, and where we're going.</p>
+    </div>
+  </div>
+  <div class="roadmap-container">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot done"></div>
+        <div class="timeline-card">
+          <div class="timeline-phase">Phase 0 — Complete ✅</div>
+          <div class="timeline-title">Ideation & Community Formation</div>
+          <div class="timeline-items">
+            <div class="timeline-item-row"><i class="fas fa-check done-icon"></i> Open idea board and community discussion</div>
+            <div class="timeline-item-row"><i class="fas fa-check done-icon"></i> Core team formation</div>
+            <div class="timeline-item-row"><i class="fas fa-check done-icon"></i> Legal review and ethical guardrails defined</div>
+            <div class="timeline-item-row"><i class="fas fa-check done-icon"></i> School representatives recruited</div>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot current"></div>
+        <div class="timeline-card">
+          <div class="timeline-phase">Phase 1 — In Progress 🔄</div>
+          <div class="timeline-title">Interim Archive (Google Drive)</div>
+          <div class="timeline-items">
+            <div class="timeline-item-row"><i class="fas fa-check done-icon"></i> Shared Google Drive with standardized folder structure</div>
+            <div class="timeline-item-row"><i class="fas fa-spinner progress-icon"></i> Initial paper collection drive across schools</div>
+            <div class="timeline-item-row"><i class="fas fa-spinner progress-icon"></i> Naming convention documentation</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Data pipeline for later migration</div>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-phase">Phase 2 — Upcoming</div>
+          <div class="timeline-title">MVP Platform Launch</div>
+          <div class="timeline-items">
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Web platform with upload + metadata</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Search and filter system</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Duplicate detection</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Open access (no login for viewing)</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Migration from Google Drive archive</div>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-phase">Phase 3 — Future</div>
+          <div class="timeline-title">Question Bank + Community Features</div>
+          <div class="timeline-items">
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Topic-wise question bank with search</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Memory question submission interface</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Contributor recognition and leaderboard</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Course pages and personalization</div>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-phase">Phase 4 — Long Term Vision</div>
+          <div class="timeline-title">AI-Assisted Learning Tools</div>
+          <div class="timeline-items">
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> AI extraction of questions from uploaded PDFs</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Quiz mode with topic-wise practice</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> Repeat question detection across years</div>
+            <div class="timeline-item-row"><i class="fas fa-clock todo-icon"></i> AI-generated solution hints (clearly marked)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ABOUT PAGE ===== -->
+<div class="page" id="page-about">
+  <div class="page-header">
+    <div style="max-width:900px;margin:0 auto;">
+      <h1><i class="fas fa-info-circle" style="color:var(--primary);margin-right:0.5rem"></i>About VITArchive</h1>
+      <p>The story behind the project.</p>
+    </div>
+  </div>
+  <div class="about-container">
+    <div class="guideline-section">
+      <h3><i class="fas fa-quote-left" style="color:var(--primary)"></i> Our Mission</h3>
+      <p style="color:var(--text2);line-height:1.8;font-size:0.95rem;">VITArchive is a student-built, student-maintained academic memory for VIT University. We believe every student should have fair access to past papers and questions — not just those in the right WhatsApp group. Our platform is, and always will be, completely free, open-source, and community-driven.</p>
+    </div>
+    <div class="section-title" style="font-size:1.1rem;margin:1.5rem 0 0.5rem;">Our Values</div>
+    <div class="value-grid">
+      <div class="value-card"><div class="value-icon"></div><div><div class="value-title">Open Access</div><div class="value-desc">No login required. No paywalls. No restricted tiers. All papers, all courses, always free.</div></div></div>
+      <div class="value-card"><div class="value-icon"></div><div><div class="value-title">Privacy First</div><div class="value-desc">We never store credentials. Login is optional and only for personalization, never for access.</div></div></div>
+      <div class="value-card"><div class="value-icon"></div><div><div class="value-title">Community Driven</div><div class="value-desc">Built by students, maintained by students, governed by the community — not any single person.</div></div></div>
+      <div class="value-card"><div class="value-icon"></div><div><div class="value-title">Long Term</div><div class="value-desc">Designed to outlive individual batches and serve VIT students for years to come.</div></div></div>
+    </div>
+    <div class="section-title" style="font-size:1.1rem;margin:1.5rem 0 0.5rem;">Core Team</div>
+    <div class="team-grid">
+      <div class="team-card"><div class="team-avatar">R</div><div class="team-name">Rahul K.</div><div class="team-role">Founder & Lead Dev</div></div>
+      <div class="team-card"><div class="team-avatar">A</div><div class="team-name">Ananya S.</div><div class="team-role">Community Manager</div></div>
+      <div class="team-card"><div class="team-avatar">P</div><div class="team-name">Priya M.</div><div class="team-role">Design Lead</div></div>
+      <div class="team-card"><div class="team-avatar">S</div><div class="team-name">Suresh P.</div><div class="team-role">Backend Dev</div></div>
+      <div class="team-card"><div class="team-avatar">V</div><div class="team-name">Vishnu T.</div><div class="team-role">SCOPE Rep</div></div>
+      <div class="team-card"><div class="team-avatar">N</div><div class="team-name">Nidhi R.</div><div class="team-role">Content Reviewer</div></div>
+    </div>
+    <div style="margin-top:2rem;padding:1.5rem;background:linear-gradient(135deg,var(--bg2),var(--surface));border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
+      <div style="font-size:1.5rem;margin-bottom:0.5rem;">🤝</div>
+      <div style="font-weight:700;margin-bottom:0.5rem;">Want to join the team?</div>
+      <div style="color:var(--text2);font-size:0.88rem;margin-bottom:1rem;">We're always looking for contributors, reviewers, school reps, and developers.</div>
+      <button class="btn-primary" onclick="showPage('feedback');showToast('Application form opened!')">Get Involved</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FEEDBACK PAGE ===== -->
+<div class="page" id="page-feedback">
+  <div class="page-header">
+    <div style="max-width:700px;margin:0 auto;">
+      <h1><i class="fas fa-comment" style="color:var(--primary);margin-right:0.5rem"></i>Feedback</h1>
+      <p>Help us make VITArchive better. Every piece of feedback matters.</p>
+    </div>
+  </div>
+  <div class="feedback-container">
+    <div class="section-title" style="font-size:1rem;margin-bottom:0.8rem;">What kind of feedback do you have?</div>
+    <div class="feedback-types">
+      <div class="feedback-type selected" onclick="selectFeedbackType(this)"><div class="feedback-type-icon">🐛</div><div class="feedback-type-label">Bug Report</div></div>
+      <div class="feedback-type" onclick="selectFeedbackType(this)"><div class="feedback-type-icon">💡</div><div class="feedback-type-label">Feature Idea</div></div>
+      <div class="feedback-type" onclick="selectFeedbackType(this)"><div class="feedback-type-icon">🙌</div><div class="feedback-type-label">General Feedback</div></div>
+    </div>
+    <div class="form-card">
+      <h3><i class="fas fa-star" style="color:var(--accent2)"></i> Rate Your Experience</h3>
+      <div class="stars" id="starRating">
+        <span class="star lit" onclick="rateStar(1)">★</span>
+        <span class="star lit" onclick="rateStar(2)">★</span>
+        <span class="star lit" onclick="rateStar(3)">★</span>
+        <span class="star lit" onclick="rateStar(4)">★</span>
+        <span class="star" onclick="rateStar(5)">★</span>
+      </div>
+      <div class="form-group">
+        <label>Your Feedback *</label>
+        <textarea rows="5" placeholder="Tell us what you think, what's broken, or what you'd love to see..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Your Name / Reg No (Optional)</label>
+        <input type="text" placeholder="Leave blank to stay anonymous">
+      </div>
+      <div class="form-group">
+        <label>Contact Email (Optional)</label>
+        <input type="email" placeholder="If you'd like us to follow up">
+      </div>
+      <button class="btn-primary" onclick="showToast('✅ Feedback submitted! Thank you so much!')"><i class="fas fa-paper-plane"></i> Submit Feedback</button>
+    </div>
+    <div style="text-align:center;color:var(--text3);font-size:0.82rem;margin-top:0.5rem;">
+      You can also reach us at <span style="color:var(--primary)">vitarchive@gmail.com</span> or open an issue on our GitHub.
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" style="margin-bottom:0.8rem;">
+          <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+          VITArchive
+        </div>
+        <p>A student-built, community-driven archive of VIT exam papers. Open access, open source, forever free.</p>
+        <div class="footer-social" style="margin-top:1rem;">
+          <div class="social-btn"><i class="fab fa-github"></i></div>
+          <div class="social-btn"><i class="fab fa-discord"></i></div>
+          <div class="social-btn"><i class="fab fa-instagram"></i></div>
+          <div class="social-btn"><i class="fab fa-linkedin"></i></div>
+        </div>
+      </div>
+      <div>
+        <div class="footer-links-title">Archive</div>
+        <a class="footer-link" onclick="showPage('browse')">Browse Papers</a>
+        <a class="footer-link" onclick="showPage('qbank')">Question Bank</a>
+        <a class="footer-link" onclick="showPage('memory')">Memory Questions</a>
+        <a class="footer-link" onclick="showPage('courses')">Course Pages</a>
+        <a class="footer-link" onclick="showPage('search')">Search</a>
+      </div>
+      <div>
+        <div class="footer-links-title">Community</div>
+        <a class="footer-link" onclick="showPage('upload')">Upload Paper</a>
+        <a class="footer-link" onclick="showPage('request')">Request Papers</a>
+        <a class="footer-link" onclick="showPage('leaderboard')">Leaderboard</a>
+        <a class="footer-link" onclick="showPage('contributors')">Contributors</a>
+        <a class="footer-link" onclick="showPage('feedback')">Feedback</a>
+      </div>
+      <div>
+        <div class="footer-links-title">Info</div>
+        <a class="footer-link" onclick="showPage('about')">About</a>
+        <a class="footer-link" onclick="showPage('guidelines')">Guidelines</a>
+        <a class="footer-link" onclick="showPage('faq')">FAQ</a>
+        <a class="footer-link" onclick="showPage('roadmap')">Roadmap</a>
+        <a class="footer-link" onclick="showPage('stats')">Statistics</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 VITArchive - By the students. For the students. Of the students.</div>
+      <div>Open Source • No Ads • No Paywalls • MIT License</div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// Page navigation
+function showPage(id, addToHistory = true) {
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+
+  const btn = [...document.querySelectorAll('.nav-link')].find(l => l.textContent.trim().toLowerCase().includes(
+    id === 'home' ? 'home' :
+    id === 'browse' ? 'browse' :
+    id === 'search' ? 'search' :
+    id === 'courses' ? 'course' :
+    id === 'upload' ? 'upload' :
+    id === 'memory' ? 'memory' :
+    id === 'qbank' ? 'question' :
+    id === 'leaderboard' ? 'leader' :
+    id === 'request' ? 'request' :
+    id === 'stats' ? 'stat' :
+    id === 'contributors' ? 'contrib' :
+    id === 'guidelines' ? 'guide' :
+    id === 'faq' ? 'faq' :
+    id === 'roadmap' ? 'road' :
+    id === 'about' ? 'about' :
+    id === 'feedback' ? 'feed' : ''
+  ));
+
+  if (btn) btn.classList.add('active');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // ADD THIS PART
+  if (addToHistory) {
+    history.pushState({page: id}, "", "#" + id);
+  }
+}
+
+// handle browser back / forward buttons
+window.addEventListener("popstate", function(event) {
+
+  if (event.state && event.state.page) {
+    showPage(event.state.page, false);
+  } else if (location.hash) {
+    showPage(location.hash.replace("#",""), false);
+  } else {
+    showPage("home", false);
+  }
+
+});
+
+window.addEventListener("load", function() {
+  if(location.hash){
+    showPage(location.hash.replace("#",""), false);
+  }
+});
+
+// Theme toggle
+const toggle = document.getElementById('themeToggle');
+toggle.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  toggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+});
+
+// Toast
+function showToast(msg) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = '<i class="fas fa-check-circle" style="color:var(--accent)"></i> ' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(100%)'; t.style.transition='all 0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// FAQ toggle
+function toggleFaq(el) {
+  const item = el.parentElement;
+  item.classList.toggle('open');
+}
+
+// Filter options
+document.querySelectorAll('.filter-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const group = opt.closest('.filter-options');
+    group.querySelectorAll('.filter-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+  });
+});
+
+// Filter pills
+document.querySelectorAll('.filter-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    const group = pill.closest('.qbank-filters, div');
+    pill.classList.toggle('active');
+  });
+});
+
+// Feedback type
+function selectFeedbackType(el) {
+  document.querySelectorAll('.feedback-type').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// Star rating
+function rateStar(n) {
+  const stars = document.querySelectorAll('#starRating .star');
+  stars.forEach((s, i) => s.classList.toggle('lit', i < n));
+}
+
+// Upload zone drag
+const zone = document.getElementById('uploadZone');
+if (zone) {
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); showToast('📄 File dropped! Fill in the details below.'); });
+}
+
+// Auto-animate bars on stats page
+function animateBars() {
+  document.querySelectorAll('.bar').forEach(bar => {
+    const h = bar.style.height;
+    bar.style.height = '0';
+    setTimeout(() => bar.style.height = h, 100);
+  });
+}
+const statsObserver = new MutationObserver(() => {
+  if (document.getElementById('page-stats').classList.contains('active')) animateBars();
+});
+statsObserver.observe(document.getElementById('page-stats'), { attributes: true, attributeFilter: ['class'] });
+</script>
+</body>
+</html>
