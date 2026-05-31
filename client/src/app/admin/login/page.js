@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "next";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+
+import { API_URL } from "@/config";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -15,7 +17,7 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:4000/api/admin/login", {
+      const res = await fetch(`${API_URL}/api/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

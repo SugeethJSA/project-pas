@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "next";
+import { useState } from "react";
+
+import { API_URL } from "@/config";
 
 export default function BulkUpload() {
   const [file, setFile] = useState(null);
@@ -23,7 +25,7 @@ export default function BulkUpload() {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://localhost:4000/api/bulk/questions", {
+      const res = await fetch(`${API_URL}/api/bulk/questions`, {
         method: "POST",
         body: formData,
         credentials: "include"

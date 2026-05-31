@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "next";
+import { useEffect, useState } from "react";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();

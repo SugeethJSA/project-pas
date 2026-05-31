@@ -1,6 +1,8 @@
 "use client";
-import { useEffect, useState } from "next";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
+import { API_URL } from "@/config";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
@@ -10,7 +12,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/admin/stats", {credentials: "include"});
+        const res = await fetch(`${API_URL}/api/admin/stats`, {credentials: "include"});
         const data = await res.json();
         
         if (data.success) {

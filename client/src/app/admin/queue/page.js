@@ -1,5 +1,7 @@
 "use client";
-import { useEffect, useState } from "next";
+import { useEffect, useState } from "react";
+
+import { API_URL } from "@/config";
 
 export default function ApprovalQueue() {
   const [sources, setSources] = useState([]);
@@ -11,7 +13,7 @@ export default function ApprovalQueue() {
 
   const fetchPending = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/sources?approval_status=PENDING", {credentials: "include"});
+      const res = await fetch(`${API_URL}/api/sources?approval_status=PENDING`, {credentials: "include"});
       const data = await res.json();
       if (data.success) {
         setSources(data.data);
@@ -25,7 +27,7 @@ export default function ApprovalQueue() {
 
   const handleApprove = async (id) => {
     try {
-      const res = await fetch(`http://localhost:4000/api/sources/${id}/approve`, {
+      const res = await fetch(`${API_URL}/api/sources/${id}/approve`, {
         method: "PUT",
         credentials: "include"
       });
@@ -39,7 +41,7 @@ export default function ApprovalQueue() {
 
   const handleReject = async (id) => {
     try {
-      const res = await fetch(`http://localhost:4000/api/sources/${id}`, {
+      const res = await fetch(`${API_URL}/api/sources/${id}`, {
         method: "DELETE",
         credentials: "include"
       });

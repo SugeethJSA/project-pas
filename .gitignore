@@ -18,3 +18,5 @@ Thumbs.db
 # VS Code clutter
 .vscode/
 !.vscode/extensions.json
+.vercel
+.env*
