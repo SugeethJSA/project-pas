@@ -2,8 +2,32 @@ const express = require("express");
 const { z } = require("zod");
 const { query } = require("../db/query");
 const validateBody = require("../middleware/validate");
+const { generatePresignedUrl } = require("../lib/s3");
 
 const router = express.Router();
+
+const uploadRequestSchema = z.object({
+  fileName: z.string().trim().min(1),
+  fileType: z.string().trim().min(1),
+});
+
+router.post("/upload-url", validateBody(uploadRequestSchema), async (req, res, next) => {
+  try {
+    const { fileName, fileType } = req.validatedBody;
+    const { uploadUrl, fileUrl, objectKey } = await generatePresignedUrl(fileName, fileType);
+    
+    return res.json({
+      success: true,
+      data: {
+        uploadUrl,
+        fileUrl,
+        objectKey
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 const sourceCreateSchema = z.object({
   course_code: z.string().trim().min(1).optional().nullable(),
@@ -186,6 +210,54 @@ router.post("/", validateBody(sourceCreateSchema), async (req, res, next) => {
       success: true,
       data: insertResult.rows[0],
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+const { requireAdmin } = require("../middleware/auth");
+
+router.put("/:sourceId/approve", requireAdmin, async (req, res, next) => {
+  try {
+    const sourceId = Number(req.params.sourceId);
+    if (!Number.isInteger(sourceId) || sourceId <= 0) {
+      return res.status(400).json({ success: false, error: "sourceId must be a positive integer" });
+    }
+
+    const updateResult = await query(
+      "UPDATE sources SET approval_status = 'APPROVED' WHERE source_id = $1 RETURNING *",
+      [sourceId]
+    );
+
+    if (updateResult.rowCount === 0) {
+      return res.status(404).json({ success: false, error: "Source not found" });
+    }
+
+    return res.json({ success: true, data: updateResult.rows[0] });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/:sourceId", requireAdmin, async (req, res, next) => {
+  try {
+    const sourceId = Number(req.params.sourceId);
+    if (!Number.isInteger(sourceId) || sourceId <= 0) {
+      return res.status(400).json({ success: false, error: "sourceId must be a positive integer" });
+    }
+
+    // First delete associated questions to satisfy foreign key constraints (or rely on ON DELETE CASCADE)
+    // Assuming we want to explicitly handle or relying on cascade.
+    const deleteResult = await query(
+      "DELETE FROM sources WHERE source_id = $1 RETURNING source_id",
+      [sourceId]
+    );
+
+    if (deleteResult.rowCount === 0) {
+      return res.status(404).json({ success: false, error: "Source not found" });
+    }
+
+    return res.json({ success: true, message: "Source deleted successfully" });
   } catch (error) {
     next(error);
   }
