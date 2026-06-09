@@ -1,6 +1,8 @@
 # Pitch: VIT Student Paper Archive Platform
 The project to create a unified materials portal for VIT Chennai, as a student-based community initiative.
 
+Edit: Features added into AmazeCC.
+
 ## 1. Executive Summary
 
 Students at VIT generate a **huge volume of academic material** every semester—CATs, FATs, PATs, assignments, and internal assessments. Today, most of this material is shared **informally via WhatsApp groups**, where it quickly becomes disorganized, duplicated, lost, or inaccessible to future batches.
